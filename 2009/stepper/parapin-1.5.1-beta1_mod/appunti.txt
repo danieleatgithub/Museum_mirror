@@ -1,0 +1,500 @@
+  229  grep SymLinks *
+  230  grep SymLinks ../*
+  231  vim userdir.conf
+  232  cd ..
+  233  ls
+  234  ls sites-available
+  235  ls sites-enabled
+  236  cd sites-available/
+  237  ls
+  238  less default 
+  239  cp default Doc
+  240  vim Doc
+  241  vim default 
+  242  ls
+  243  rm Doc 
+  244  vim default 
+  245  cp default default.org
+  246  vim default
+  247  ls /var/www
+  248  vim default
+  249  /etc/init.d/apache2 restart
+  250  cd
+  251  dd if=/dev/port status=noxfer bs=1 count=1 skip=760 oflag=noctty >1 a | od -x
+  252  dd if=/dev/port status=noxfer bs=1 count=1 skip=760 oflag=noctty 2> a
+  253  dd if=/dev/port status=noxfer bs=1 count=1 skip=760 oflag=noctty 2> a | od -x
+  254  dd if=/dev/port status=noxfer bs=1 count=1 skip=760 oflag=noctty 2> /dev/null | od -x
+  255  dd if=/dev/port status=noxfer bs=1 count=1 skip=760 oflag=noctty 2> /dev/null | od -t x1
+  256  dd if=/dev/port status=noxfer bs=1 count=1 skip=760 oflag=noctty 2> /dev/null | od -t x1 2> /dev/null
+  257  dd if=/dev/port status=noxfer bs=1 count=1 skip=760 oflag=noctty 2> /dev/null | od -t x1 -N 1 2> /dev/null
+  258  dd if=/dev/port status=noxfer bs=1 count=1 skip=760 oflag=noctty 2> /dev/null | od -t x1 -N 1 
+  259  dd if=/dev/port status=noxfer bs=1 count=1 skip=760 oflag=noctty 2> /dev/null | od -t x1 -N1 
+  260  dd if=/dev/port status=noxfer bs=1 count=1 skip=760 oflag=noctty 2> /dev/null | od -tx1 -N1 
+  261  dd if=/dev/port status=noxfer bs=1 count=1 skip=760 oflag=noctty 2> /dev/null | od  -N1 
+  262  dd if=/dev/port status=noxfer bs=1 count=1 skip=760 oflag=noctty 2> /dev/null | od -tx1 -N4
+  263  dd if=/dev/port status=noxfer bs=1 count=1 skip=760 oflag=noctty 2> /dev/null | od -tx1 -w1
+  264  dd if=/dev/port status=noxfer bs=1 count=1 skip=760 oflag=noctty 2> /dev/null | od -tx1 --string=1
+  265  dd if=/dev/port status=noxfer bs=1 count=1 skip=760 oflag=noctty 2> /dev/null | od -tx1 -A0
+  266  dd if=/dev/port status=noxfer bs=1 count=1 skip=760 oflag=noctty 2> /dev/null | od -tx1 -A1
+  267  dd if=/dev/port status=noxfer bs=1 count=1 skip=760 oflag=noctty 2> /dev/null | od -tx1 -A
+  268  od --help
+  269  dd if=/dev/port status=noxfer bs=1 count=1 skip=760 oflag=noctty 2> /dev/null | od -tx1 -1
+  270  dd if=/dev/port status=noxfer bs=1 count=1 skip=760 oflag=noctty 2> /dev/null | od -tx1 +1
+  271  dd if=/dev/port status=noxfer bs=1 count=1 skip=760 oflag=noctty 2> /dev/null | od -tx1 -j.-1
+  272  dd if=/dev/port status=noxfer bs=1 count=1 skip=760 oflag=noctty 2> /dev/null | od -tx1 -j1
+  273  dd if=/dev/port status=noxfer bs=1 count=1 skip=760 oflag=noctty 2> /dev/null | od -tx1 -j2
+  274  dd if=/dev/port status=noxfer bs=1 count=1 skip=760 oflag=noctty 2> /dev/null | od -tx1 -j0
+  275  dd if=/dev/port status=noxfer bs=1 count=1 skip=760 oflag=noctty 2> /dev/null | od -tx1 -s
+  276  dd if=/dev/port status=noxfer bs=1 count=1 skip=760 oflag=noctty 2> /dev/null | od -tx1 -c
+  277  dd if=/dev/port status=noxfer bs=1 count=1 skip=760 oflag=noctty 2> /dev/null | od -tx1 
+  278  dd if=/dev/port status=noxfer bs=1 count=1 skip=760 oflag=noctty 2> /dev/null | od -tx1 2> a
+  279  dd if=/dev/port status=noxfer bs=1 count=1 skip=760  2> /dev/null | od -tx1 2> a
+  280  dd if=/dev/port status=noxfer bs=1 count=1 skip=760  2> /dev/null | od -tx1 +OFFSET.1
+  281  dd if=/dev/port status=noxfer bs=1 count=1 skip=760  2> /dev/null | od -tx1 +1
+  282  dd if=/dev/port status=noxfer bs=1 count=1 skip=760  2> /dev/null | od -tx1 +0
+  283  dd if=/dev/port status=noxfer bs=1 count=1 skip=760  2> /dev/null | od -N 1
+  284  dd if=/dev/port status=noxfer bs=1 count=1 skip=760  2> /dev/null | od -tx1 
+  285  dd if=/dev/port status=noxfer bs=1 count=1 skip=760  2> /dev/null | od -tx1 | head -1
+  286  dd if=/dev/port status=noxfer bs=1 count=1 skip=760  2> /dev/null | od -tx1 | $(head -1) 
+  287  dd if=/dev/port status=noxfer bs=1 count=1 skip=760  2> /dev/null | od -tx1 | head -1 
+  288  dd if=/dev/port status=noxfer bs=1 count=1 skip=760  2> /dev/null | od -tx1 -s
+  289  dd if=/dev/port status=noxfer bs=1 count=1 skip=760  2> /dev/null | od -tx1 -d
+  290  dd if=/dev/port status=noxfer bs=1 count=1 skip=760  2> /dev/null | od -tx1 -A0
+  291  dd if=/dev/port status=noxfer bs=1 count=1 skip=760  2> /dev/null | od -tx1 -Ax
+  292  dd if=/dev/port status=noxfer bs=1 count=1 skip=760  2> /dev/null | od -Ax
+  293  dd if=/dev/port status=noxfer bs=1 count=1 skip=760  2> /dev/null | od -tx1 -An
+  294  dd if=/dev/port status=noxfer bs=1 count=1 skip=760  2> /dev/null | od -td1 -An
+  295  dd if=/dev/port status=noxfer bs=1 count=1 skip=760  2> /dev/null | od -tx1 -An
+  296  chmod 777 inb.sh 
+  297  ./inb.sh 
+  298  dd if=/dev/port status=noxfer bs=1 count=1 skip=760  2> /dev/null | od -tx1 -An | sed 'd \ '
+  299  dd if=/dev/port status=noxfer bs=1 count=1 skip=760  2> /dev/null | od -tx1 -An | sed d' '
+  300  dd if=/dev/port status=noxfer bs=1 count=1 skip=760  2> /dev/null | od -tx1 -An | sed /d/' '
+  301  dd if=/dev/port status=noxfer bs=1 count=1 skip=760  2> /dev/null | od -tx1 -An | sed /d/\ 
+  302  dd if=/dev/port status=noxfer bs=1 count=1 skip=760  2> /dev/null | od -tx1 -An | sed 'd" "
+  303  '
+  304  dd if=/dev/port status=noxfer bs=1 count=1 skip=760  2> /dev/null | od -tx1 -An | sed -e '/ /d'
+  305  dd if=/dev/port status=noxfer bs=1 count=1 skip=760  2> /dev/null | od -tx1 -An | sed -e '/\ /d'
+  306  dd if=/dev/port status=noxfer bs=1 count=1 skip=760  2> /dev/null | od -tx1 -An | sed -e 's/ /'
+  307  dd if=/dev/port status=noxfer bs=1 count=1 skip=760  2> /dev/null | od -tx1 -An | sed -e 's/ /""'
+  308  dd if=/dev/port status=noxfer bs=1 count=1 skip=760  2> /dev/null | od -tx1 -An | sed -e 's/ //'
+  309  vim inb.sh 
+  310  ./inb.sh 
+  311  vim base.sh
+  312  chmod 777 base.sh 
+  313  ./base.sh 
+  314  ./base.sh 0x1a
+  315  vim inb.sh 
+  316  bash -x ./base.sh 0x1a
+  317  vim inb.sh 
+  318  ./inb
+  319  ./inb.sh 
+  320  vim inb.sh 
+  321  ./inb.sh 0x2f8
+  322  vim inb.sh 
+  323  ./inb.sh 0x2f8
+  324  vim inb.sh 
+  325  ./inb.sh 0x2f8
+  326  vim inb.sh 
+  327  ./inb.sh 0x2f8
+  328  vim inb.sh 
+  329  ./inb.sh 0x2f8
+  330  ./inb.sh 0x278
+  331  vim inb.sh 
+  332  ./inb.sh 0o278
+  333  vim inb.sh 
+  334  ./inb.sh 0o278
+  335  vim inb.sh 
+  336  ./inb.sh 0x278
+  337  vim inb.sh 
+  338  ./inb.sh 0x278
+  339  vim inb.sh 
+  340  ./inb.sh 0x278
+  341  ./inb.sh 0x2f8
+  342  vim inb.sh 
+  343  ./inb.sh 0x2f8
+  344  vim inb.sh 
+  345  ./inb.sh 0x2f8
+  346  vim inb.sh 
+  347  ./inb.sh 0x2f8
+  348  vim inb.sh 
+  349  ./inb.sh 0x2f8
+  350  vim inb.sh 
+  351  ./inb.sh 0x2f8
+  352  vim inb.sh 
+  353  ./inb.sh 0x2f8
+  354  vim inb.sh 
+  355  ./inb.sh 0x2f8
+  356  vim inb.sh 
+  357  ./inb.sh 0x2f8
+  358  vim inb.sh 
+  359  ./inb.sh 0x2f8
+  360  vim inb.sh 
+  361  ./inb.sh 0x2f8
+  362  vim inb.sh 
+  363  ./inb.sh 0x2f8
+  364  ./inb.sh 0x3f8
+  365  inb 0x3f8
+  366  man bc
+  367  echo -n .
+  368  ùùù
+  369  ls /dev/tcp
+  370  mknod /dev/tcp c 30 36
+  371  echo "HEAD / HTTP/1.0" >/dev/tcp/${TCP_HOST}/${TCP_PORT}
+  372  ls /dev/tcp
+  373  echo "HEAD / HTTP/1.0" >/dev/tcp/127.0.0.1/80
+  374  echo "HEAD / HTTP/1.0" > /dev/tcp/127.0.0.1/80
+  375  ls /dev/ram*
+  376  man trap
+  377  help trap
+  378  cd /usr/src
+  379  ls
+  380  cd linux-source-2.6.24
+  381  ls
+  382  cd modules/
+  383  ls
+  384  cd i386/
+  385  ls
+  386  ls -l
+  387  less parport-modules 
+  388  cd ..
+  389  ls
+  390  cd ..
+  391  ls
+  392  cd drivers/
+  393  ls
+  394  cd parport/
+  395  ls
+  396  less parport_pc.c
+  397  less probe.c
+  398  ls -l
+  399  less TODO-parport
+  400  less ieee1284.c
+  401  less parport_pc.c
+  402  inb 0x278
+  403  inb 0x27c
+  404  less parport_pc.c
+  405  less procfs.c
+  406  grep TRISTATE *
+  407  less parport_pc.c
+  408  cd ..
+  409  ls
+  410  ls parport/
+  411  locate lp
+  412  ls ..
+  413  ls
+  414  ls leds/
+  415  ls base
+  416  find . -name lp
+  417  find . -name lp*
+  418  cd char/
+  419  ls
+  420  less ppdev.c 
+  421  less lp.c
+  422  vd
+  423  cd
+  424  ls
+  425  top
+  426  df -h
+  427  cd /etc
+  428  ls
+  429  less modules 
+  430  cd modprobe.d
+  431  ls ../hal
+  432  ls
+  433  less ../motd.tail 
+  434  vim ../motd.tail
+  435  ascii-xfr 
+  436  ls
+  437  less blacklist-framebuffer 
+  438  less blacklist
+  439  man modprobe
+  440  ls arch
+  441  ls arch/i386 
+  442  man modprobe.conf
+  443  less isapnp 
+  444  less aliases 
+  445  vim blacklist
+  446  rmmod lp
+  447  lsmod
+  448  cd /usr
+  449  cd src
+  450  ls
+  451  cd linux-source-2.6.24
+  452  ls
+  453  cd drivers/
+  454  ls
+  455  less Makefile 
+  456  ls
+  457  ls -l
+  458  cd /usr
+  459  cd src
+  460  ls
+  461  dpkg -h
+  462  dpkg -S linux
+  463  dpkg -h
+  464  dpkg - linux
+  465  dpkg -l linux
+  466  dpkg -l linux*
+  467  top
+  468  df -h
+  469  top
+  470  ls
+  471  pwd
+  472  ps axf
+  473  cd /usr/src
+  474  ls
+  475  ls -ltr
+  476  ls -ltr *.deb
+  477  cd /boot
+  478  cd grub
+  479  ls
+  480  vim menu.lst
+  481  ps axf
+  482  top
+  483  cd /usr�/src
+  484  cd /usr/src
+  485  ls
+  486  dpkg -i linux-image-2.6.24.3-dany_2.6.24.3-dany-10.00.Custom_i386.deb
+  487  ps axf
+  488  cd /usr
+  489  cd src
+  490  ls
+  491  cd linux-source-2.6.24/
+  492  ls
+  493  history
+  494  fakeroot make-kpkg --initrd --append-to-version=-dany kernel_image kernel_headers
+  495  ls
+  496  cd ..
+  497  ls
+  498  ls -ltr
+  499  dpkg -i linux-headers-2.6.24.3-dany_2.6.24.3-dany-10.00.Custom_i386.deb
+  500  ls
+  501  tar xvf parapin-1.5.1-beta1.tgz
+  502  cd parapin-1.5.1-beta1/
+  503  ls
+  504  ./setup-2.6.sh 
+  505  make
+  506  ls /usr/src/
+  507  ls /usr/src/linux-2.6.24-22-generic
+  508  vim Makefile
+  509  make
+  510  ls /usr/src/linux-headers-2.6.24-22-generic/
+  511  vim Makefile
+  512  make
+  513  make clean
+  514  make
+  515  make modules
+  516  /home/daniele/parapin-1.5.1-beta1/parapindriver/parapindriver.c
+  517  vim /home/daniele/parapin-1.5.1-beta1/parapindriver/parapindriver.c
+  518  make modules
+  519  vim /home/daniele/parapin-1.5.1-beta1/parapindriver/parapindriver.c
+  520  make modules
+  521  vim /home/daniele/parapin-1.5.1-beta1/parapindriver/parapindriver.c
+  522  make modules
+  523  vim /home/daniele/parapin-1.5.1-beta1/parapindriver/parapindriver.c
+  524  make modules
+  525  ls
+  526  chmod 777 ppdrv_load.sh
+  527  ./ppdrv_load.sh
+  528  bg
+  529  fg
+  530  cat ./ppdrv_load.sh
+  531  bash -x ./ppdrv_load.sh
+  532  make install
+  533  make module install
+  534  make modules install
+  535  ls
+  536  ls kparapin/
+  537  less INSTALL 
+  538  make all
+  539  make allinstall
+  540  l
+  541  ls
+  542  ppdrv_load.sh
+  543  modprobe kparapin
+  544  dmesg
+  545  modprobe parport
+  546  modprobe parport_pc
+  547  cd
+  548  ls
+  549  locate parport | grep ko
+  550  mv parport.ko /lib/modules/2.6.24-16-generic/kernel/drivers/parport/.
+  551  depmod -q
+  552  cd parapin-1.5.1-beta1/
+  553  ls
+  554  ppdrv_load.sh
+  555  modprobe parport
+  556  ls ..
+  557  modprobe parport.ko
+  558  history
+  559  mv /lib/modules/2.6.24-16-generic/kernel/drivers/parport/parport.ko /lib/modules/2.6.24-22-generic/kernel/drivers/parport/.
+  560  depmod -q
+  561  modprobe parport.ko
+  562  modprobe parport
+  563  ppdrv_load.sh
+  564  lsmod
+  565  ls
+  566  cd examples/
+  567  ls
+  568  ./adc0831 
+  569  ./ppdrv-test 
+  570  ./inputtest 
+  571  ./outputtest 
+  572  ./inputtest 
+  573  ls
+  574  man vim
+  575  cp outputtest.c ../../pp1.c
+  576  cd
+  577  ls
+  578  ls parapin-1.5.1-beta1
+  579  ls ..
+  580  make pp1
+  581  make pp1 -l parapin.a
+  582  less parapin-1.5.1-beta1/Makefile
+  583  make pp1 -lparapin
+  584  cc pp1.c   -o pp1 -lparapin
+  585  vim pp1.c
+  586  rm pp1.c pp1
+  587  cp parapin-1.5.1-beta1/examples/ppdrv-test.c p.c
+  588  vim p.c
+  589  make p
+  590  ./p
+  591  vim p
+  592  vim p.c
+  593  ls /dev/pp*
+  594  ls -l /dev/pp*
+  595  lsmod
+  596  ls
+  597  cd parapin-1.5.1-beta1/
+  598  ls
+  599  cat ppdrv_load.sh
+  600  ls /dev/pp*
+  601  grep ppdrv_device /proc/devices
+  602  mknod /dev/ppdrv_device1 u 253 1
+  603  grep parport /var/log/messages
+  604  cat ppdrv_load.sh
+  605  modprobe kparapin io=0x378
+  606  lsmod
+  607  cat ppdrv_load.sh
+  608  cd ..
+  609  ls
+  610  vim p.c
+  611  man open
+  612  man 3 open
+  613  man 2 open
+  614  vim p.c
+  615  make p
+  616  ./p
+  617  history
+  618  modinfo kparapin
+  619  modinfo -p kparapin
+  620  man modinfo
+  621  modinfo -k kparapin
+  622  man modinfo
+  623  inb 0x278
+  624  grep parport /var/log/messages
+  625  inb 0x378
+  626  outb 0x378 0
+  627  outb 0x278 0
+  628  inb 0x378
+  629  inb 0x278
+  630  modprobe parapin io=0x278
+  631  modprobe io=0x278
+  632  rmmod parapin
+  633  rmmod kparapin
+  634  ps axf | grep parap
+  635  ls
+  636  cd parapin-1.5.1-beta1
+  637  ls
+  638  cd parapindriver/
+  639  ls
+  640  modinfo parapindriver
+  641  cd ..
+  642  ls
+  643  cat ppdrv_load.sh
+  644  modprobe parapindriver devname=/dev/
+  645  ls /dev/pp*
+  646  modprobe parapindriver devname=/dev/ppdrv_device1
+  647  dmesg
+  648  modprobe parapindriver devname=/dev/ppdrv_device1 io=0x378
+  649  dmesg
+  650  lsmod
+  651  rmmod parapindriver
+  652  modprobe parapindriver devname=/dev/ppdrv_device1 io=0x378
+  653  dmesg
+  654  modprobe parapindriver devname=/dev/ppdrv_device1 
+  655  dmesg
+  656  cat /dev/ppdrv_device
+  657  cat /dev/ppdrv_device1
+  658  ls
+  659  ls parapindriver
+  660  less parapindriver/parapindriver.mod.c
+  661  less parapindriver.c
+  662  less doc/parapin.txt 
+  663  lsmod 
+  664  modinfo -p parport_pc
+  665  ls
+  666  less parapindriver.c
+  667  less doc/parapin.txt 
+  668  less parapindriver.c
+  669  man 3 open
+  670  man 2 open
+  671  less parapindriver.c
+  672  vim parapindriver.c
+  673  vim kparapin/kparapin.c
+  674  make all
+  675  make allinstall
+  676  ppdrv_load.sh
+  677  ls /dev/pp*
+  678  ls -l /dev/pp*
+  679  cat /dev/ppdrv_device1
+  680  chmod 777 /dev/ppdrv_device1
+  681  cat /dev/ppdrv_device1
+  682  cat /dev/ppdrv_device
+  683  rmmod parapindriver
+  684  modprobe parapindriver
+  685  cat /dev/ppdrv_device
+  686  cat /dev/ppdrv_device1
+  687  ls
+  688  cd examples/
+  689  ls
+  690  vim ppdrv-test.c
+  691  make
+  692  cd ..
+  693  make
+  694  examples/ppdrv-test
+  695  outb 0x378 0
+  696  inb 0x378
+  697  outb 0x379 0
+  698  inb 0x379
+  699  outb 0x379 0xff
+  700  inb 0x379
+  701  examples/ppdrv-test
+  702  cd examples/
+  703  vim ppdrv-test.c 
+  704  cd ..
+  705  make
+  706  examples/ppdrv-test 
+  707  examples/ppdrv-test 1
+  708  examples/ppdrv-test 1 gkig
+  709  cd examples/
+  710  ls
+  711  vim ppdrv-test.c
+  712  cd ..
+  713  make
+  714  vim examples/ppdrv-test.c
+  715  make
+  716  examples/ppdrv-test 1 gkig
+  717  inb 0x278
+  718  inb 0x378
+  719  inb 0x378;inb 0x278
+  720  examples/ppdrv-test 
+  721  inb 0x378;inb 0x278
+  722  outb 0x378 255
+  723  outb 0x278 255
+  724  inb 0x378;inb 0x278
+  725  examples/ppdrv-test 
+  726  inb 0x378;inb 0x278
+  727  vim examples/ppdrv-test.c
+  728  history >> appunti.txt

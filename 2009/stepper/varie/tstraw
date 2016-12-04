@@ -1,0 +1,87 @@
+#!/bin/bash
+
+DATAREG="0x278"
+CTRLREG="0x27a"
+
+DEVICE="/dev/ppdrv1"
+
+RAWDATA=false
+RAWCTRL=false
+DEVDATA=true
+DEVCTRL=false
+
+# Parallel output tester
+#
+# $BASE+2 -- pin  1 -- !bit 0 --> O O <-- D0  -- pin  2 -- $BASE+0 bit 0
+# $BASE+2 -- pin 14 -- !bit 1 --> O O <-- D1  -- pin  3 -- $BASE+0 bit 1
+# $BASE+2 -- pin 16 --  bit 2 --> O O <-- D2  -- pin  4 -- $BASE+0 bit 2 
+# $BASE+2 -- pin 17 -- !bit 3 --> O O <-- D3  -- pin  5 -- $BASE+0 bit 3 
+#                                   O <-- D4  -- pin  6 -- $BASE+0 bit 4
+#                                   O <-- D5  -- pin  7 -- $BASE+0 bit 5
+#                                   O <-- D6  -- pin  8 -- $BASE+0 bit 6
+#                                   O <-- D7  -- pin  9 -- $BASE+0 bit 7
+
+# Test eigth data bit connected from pin 2 to pin 9
+# turn on/off  each single bit
+
+if $RAWDATA 
+then
+echo "RawMode now test 8 bits of data register $DATAREG" ; sleep 3
+echo -n "reset      "; outb $DATAREG 0b00000000 ; sleep 1
+echo -n "set pin  2 "; outb $DATAREG 0b00000001 ; sleep 1
+echo -n "set pin  3 "; outb $DATAREG 0b00000010 ; sleep 1
+echo -n "set pin  4 "; outb $DATAREG 0b00000100 ; sleep 1
+echo -n "set pin  5 "; outb $DATAREG 0b00001000 ; sleep 1
+echo -n "set pin  6 "; outb $DATAREG 0b00010000 ; sleep 1
+echo -n "set pin  7 "; outb $DATAREG 0b00100000 ; sleep 1
+echo -n "set pin  8 "; outb $DATAREG 0b01000000 ; sleep 1
+echo -n "set pin  9 "; outb $DATAREG 0b10000000 ; sleep 1
+echo -n "reset      "; outb $DATAREG 0b00000000 ; sleep 1
+fi
+
+if $RAWCTRL
+then
+echo "RawMode now test 4 bits of control register $CTRLREG" ; sleep 3
+echo -n "reset      "; outb $CTRLREG 0b11101011 ; sleep 1
+echo -n "set pin  1 "; outb $CTRLREG 0b11101010 ; sleep 1
+echo -n "set pin 14 "; outb $CTRLREG 0b11101001 ; sleep 1
+echo -n "set pin 16 "; outb $CTRLREG 0b11101111 ; sleep 1
+echo -n "set pin 17 "; outb $CTRLREG 0b11100011 ; sleep 1
+echo -n "reset      "; outb $CTRLREG 0b11101011 ; sleep 1
+fi
+
+if $DEVDATA
+then
+echo "DeviceMode now test 8 bits of data register $DATAREG" ; sleep 3
+echo -n "Raw reset    "; outb $DATAREG 0b00000000 ; sleep 1
+echo -n "  set pin  2 "; logger "  set pin  2 ";./on  $DEVICE  2 ; sleep 1
+echo    "reset pin  2 "; logger "reset pin  2 ";./off $DEVICE  2 ; sleep 1
+echo -n "  set pin  3 "; logger "  set pin  3 ";./on  $DEVICE  3 ; sleep 1
+echo    "reset pin  3 "; logger "reset pin  3 ";./off $DEVICE  3 ; sleep 1
+echo -n "  set pin  4 "; logger "  set pin  4 ";./on  $DEVICE  4 ; sleep 1
+echo    "reset pin  4 "; logger "reset pin  4 ";./off $DEVICE  4 ; sleep 1
+echo -n "  set pin  5 "; logger "  set pin  5 ";./on  $DEVICE  5 ; sleep 1
+echo    "reset pin  5 "; logger "reset pin  5 ";./off $DEVICE  5 ; sleep 1
+echo -n "  set pin  6 "; logger "  set pin  6 ";./on  $DEVICE  6 ; sleep 1
+echo    "reset pin  6 "; logger "reset pin  6 ";./off $DEVICE  6 ; sleep 1
+echo -n "  set pin  7 "; logger "  set pin  7 ";./on  $DEVICE  7 ; sleep 1
+echo    "reset pin  7 "; logger "reset pin  7 ";./off $DEVICE  7 ; sleep 1
+echo -n "  set pin  8 "; logger "  set pin  8 ";./on  $DEVICE  8 ; sleep 1
+echo    "reset pin  8 "; logger "reset pin  8 ";./off $DEVICE  8 ; sleep 1
+echo -n "  set pin  9 "; logger "  set pin  9 ";./on  $DEVICE  9 ; sleep 1
+echo    "reset pin  9 "; logger "reset pin  9 ";./off $DEVICE  9 ; sleep 1
+fi
+
+if $DEVCTRL 
+then 
+echo "DeviceMode now test 4 bits of control register $CTRLREG" ; sleep 3
+echo -n "reset      "; outb $CTRLREG 0b11101011 ; sleep 1
+echo -n "  set pin  1 "; logger "  set pin  1 ";./on  $DEVICE  1 ; sleep 1
+echo    "reset pin  1 "; logger "reset pin  1 ";./off $DEVICE  1 ; sleep 1
+echo -n "  set pin 14 "; logger "  set pin 14 ";./on  $DEVICE  14 ; sleep 1
+echo    "reset pin 14 "; logger "reset pin 14 ";./off $DEVICE  14 ; sleep 1
+echo -n "  set pin 16 "; logger "  set pin 16 ";./on  $DEVICE  16 ; sleep 1
+echo    "reset pin 16 "; logger "reset pin 16 ";./off $DEVICE  16 ; sleep 1
+echo -n "  set pin 17 "; logger "  set pin 17 ";./on  $DEVICE  17 ; sleep 1
+echo    "reset pin 17 "; logger "reset pin 17 ";./off $DEVICE  17 ; sleep 1
+fi

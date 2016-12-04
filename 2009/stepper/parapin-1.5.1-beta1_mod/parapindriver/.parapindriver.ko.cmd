@@ -1,0 +1,1 @@
+cmd_/home/daniele/parapin-1.5.1-beta1_mod/parapindriver/parapindriver.ko := ld -m elf_i386 -r -m elf_i386  --build-id -o /home/daniele/parapin-1.5.1-beta1_mod/parapindriver/parapindriver.ko /home/daniele/parapin-1.5.1-beta1_mod/parapindriver/parapindriver.o /home/daniele/parapin-1.5.1-beta1_mod/parapindriver/parapindriver.mod.o

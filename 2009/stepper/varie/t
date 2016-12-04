@@ -1,0 +1,30 @@
+
+sleep 2
+echo "Reset Data pin from D0-D7"
+for((i=2;i<10;i++))
+do
+./blink /dev/ppdrv1 1 2 $i > /dev/null
+done
+
+sleep 2
+echo "test Data pin from D0-D7"
+for((i=2;i<10;i++))
+do
+echo "blink pin $i"
+./blink /dev/ppdrv1 150 4 $i > /dev/null
+done
+
+sleep 2
+echo "set Data pin from D0-D7"
+for((i=2;i<10;i++))
+do
+./blink /dev/ppdrv1 1 3 $i > /dev/null
+done
+
+sleep 2
+echo "Reset Data pin from D0-D7"
+
+for((i=2;i<10;i++))
+do
+./blink /dev/ppdrv1 1 2 $i > /dev/null
+done

@@ -1,0 +1,14 @@
+> I think you are looking for phys_to_virt(0xffa00)
+
+and ioremap 
+
+>>
+>> I think you are looking for phys_to_virt(0xffa00)
+
+>and ioremap
+
+Well, area in question is always mapped... So, phys_to_virt OR ioremap
+will do the right thing - in fact, ioremap implementation
+actually does phys_to_virt for 0xa0000 - 0x100000 
+
+

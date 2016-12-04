@@ -1,0 +1,2 @@
+cp outb /usr/bin/.
+cp inb /usr/bin/.

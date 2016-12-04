@@ -1,0 +1,8 @@
+#!/bin/bash
+
+for ((i=0;$i<18;i++))
+do
+ ./ppdrv-test /dev/ppdrv1 $i 1
+ echo $i
+ sleep 5
+done

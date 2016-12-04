@@ -1,0 +1,12 @@
+#!/bin/bash
+
+trap "ctrlc" INT
+
+ctrlc () {
+  stty icanon echo
+  exit
+}
+
+stty -icanon -echo
+./stepper /dev/ppdrv1 $1 $2
+stty icanon echo
