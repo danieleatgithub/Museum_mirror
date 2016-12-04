@@ -1,0 +1,322 @@
+;
+;ÉÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÑÍÍÍÍÍÍÍÍÍÍÍÍÑÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍ»
+;º FILE:\CADASM\R10\ROM\CADOS\INT_HAND.SRC   ³VERS:1.1    ³TIPO: INTERRUPT ASM º
+;ÇÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÅÄÄÄÄÄÄÄÄÄÄÄÄÁÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ¶
+;º AUTORE: Colombo Daniele                   ³DATA: Mon  09-13-1993  20:15:45  º
+;ÌÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÏÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍ¹
+;º INCLUDE: \CADASM\R10\ROM\CADOS\IOPORT.SRC - \CADASM\R10\ROM\DRIVER\MACH.SRC º
+;ÌÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍ¹
+;º FUNZIONI PUBBLICHE: UIE URSTI     IHPIOA TXMON RXMON SPECINT IH_TXLDP       º
+;º IH_RXLDP IH_ERRLDP                                                          º
+;ÌÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍ¹
+;º DESCRIZIONE: ROUTINE ASSEMBLER PER LA GESTIONE DEGLI INTERRUPT              º
+;º Per indirizzare l'i/o interno deve essere indirizzata la porta con il bps   º
+;º dell'indirizzo a zero, mentre per l'i/o esterno il bps dell'indirizzo deve  º
+;º essere diverso da zero                                                      º
+;º                                                                             º
+;º ÉÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍ» º
+;º º DATO SUL BUS INDIRIZZI PER TUTTE LE ISTRUZIONI DI I/O DELLA CPU HD64180 º º
+;º ÌÍÍÍÍÍÍÍÍÍÍÍÍÍÑÍÍÍÍÍÍÍÍÍÍÍÍÍÑÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÑÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍ¹ º
+;º º  ISTRUZIONE ³  OPERANDO   ³  BPS ADDRESS BUS    ³   BMS ADDRESS BUS     º º
+;º ÇÄÄÄÄÄÄÄÄÄÄÄÄÄÅÄÄÄÄÄÄÄÄÄÄÄÄÄÅÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÅÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ¶ º
+;º º    OUT      ³  (nn),A     ³    Accumulatore     ³          nn           º º
+;º º    OUT      ³  (C),r      ³    Registro B       ³      Registro C       º º
+;º º    OUTI     ³             ³    Registro B       ³      Registro C       º º
+;º º    OUTD     ³             ³    Registro B       ³      Registro C       º º
+;º º    OTIR     ³             ³    Registro B       ³      Registro C       º º
+;º º    OTDR     ³             ³    Registro B       ³      Registro C       º º
+;º º    IN       ³  (nn),A     ³    Accumulatore     ³          nn           º º
+;º º    IN       ³  (C),r      ³    Registro B       ³      Registro C       º º
+;º º    INI      ³             ³    Registro B       ³      Registro C       º º
+;º º    IND      ³             ³    Registro B       ³      Registro C       º º
+;º º    INIR     ³             ³    Registro B       ³      Registro C       º º
+;º º    INDR     ³             ³    Registro B       ³      Registro C       º º
+;º º    OUT0     ³  (nn),A     ³        0            ³          nn           º º
+;º º    OTIM     ³             ³        0            ³      Registro C       º º
+;º º    OTDM     ³             ³        0            ³      Registro C       º º
+;º º    OTIMR    ³             ³        0            ³      Registro C       º º
+;º º    OTDMR    ³             ³        0            ³      Registro C       º º
+;º º    IN0      ³  (nn),A     ³        0            ³          nn           º º
+;º º             ³             ³                     ³                       º º
+;º ÈÍÍÍÍÍÍÍÍÍÍÍÍÍÏÍÍÍÍÍÍÍÍÍÍÍÍÍÏÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÏÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍ¼ º
+;ÈÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍ¼
+
+    NAME INT_HANDLER
+
+        FILE    \CADASM\R10\ROM\CADOS\IOPORT.SRC
+        FILE    \CADASM\R10\ROM\DRIVER\MACH.SRC
+        FILE    \CADASM\R10\ROM\DRIVER\SYS.SRC
+        FILE    \CADASM\R10\ROM\DRIVER\LDSTRUCT.SRC
+
+EXTRN   KEYCHAR
+
+PUBLIC  UIE,URSTI,IHPIOA,TXMON,RXMON,SPECINT,IH_TXLDP,IH_RXLDP,IH_ERRLDP
+	CSEG
+
+;
+;ÉÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÑÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍ»
+;º FUNZIONE : UIE                           ³DATE: Mon  09-13-1993  20:31:22  º
+;ÇÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÁÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ¶
+;º INPUT : Nessuno                                                            º
+;ÇÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ¶
+;º OUTPUT : Nessuno                                                           º
+;ÇÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ¶
+;º FUNZIONI CHIAMATE : Nessuna                                                º
+;ÇÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ¶
+;º DESCRIZIONE : Unespected Interrupt Error                                   º
+;º Viene attivata da un interrupt non previsto in tabella                     º
+;ÈÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍ¼
+UIE:
+	HALT
+
+
+;ÉÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÑÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍ»
+;º FUNZIONE : URSTI                         ³DATE: Mon  09-13-1993  20:31:22  º
+;ÇÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÁÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ¶
+;º INPUT : Nessuno                                                            º
+;ÇÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ¶
+;º OUTPUT : Nessuno                                                           º
+;ÇÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ¶
+;º FUNZIONI CHIAMATE : Nessuna                                                º
+;ÇÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ¶
+;º DESCRIZIONE : Unespected RST Instruction                                   º
+;º Viene attivata da una Istruzione RST non gestita                           º
+;ÈÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍ¼
+URSTI:
+	POP    HL
+	RET
+
+;
+;ÉÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÑÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍ»
+;º FUNZIONE : IHPIOA                        ³DATE: Mon  09-13-1993  20:31:22  º
+;ÇÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÁÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ¶
+;º INPUT : Nessuno                                                            º
+;ÇÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ¶
+;º OUTPUT : Nessuno                                                           º
+;ÇÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ¶
+;º FUNZIONI CHIAMATE : Nessuna                                                º
+;ÇÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ¶
+;º DESCRIZIONE : Interrupt da tastiera                                        º
+;º Viene attivata da un interrupt dalla porta A del pio, legge il carattere   º
+;º dalla porta del PIO e mette il carattere nel buffer di tastiera            º
+;º Nessun carattere =letti                                                    º
+;ÈÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍ¼
+IHPIOA:
+		EI
+		PUSH	AF
+		PUSH	BC
+		LD	BC,PIOA_DR
+		IN	A,(C)
+		LD	(KEYCHAR),A
+		POP	BC
+		POP	AF
+		RETI
+
+;ÉÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÑÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍ»
+;º FUNZIONE : TXMON                         ³DATE: Mon  09-13-1993  20:31:22  º
+;ÇÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÁÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ¶
+;º INPUT : Nessuno                                                            º
+;ÇÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ¶
+;º OUTPUT : Nessuno                                                           º
+;ÇÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ¶
+;º FUNZIONI CHIAMATE : Nessuna                                                º
+;ÇÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ¶
+;º DESCRIZIONE : Interrupt di fine trasmissione dalla porta B del SIO         º
+;ÈÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍ¼
+TXMON:
+		HALT
+
+;ÉÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÑÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍ»
+;º FUNZIONE : RXMON                         ³DATE: Mon  09-13-1993  20:31:22  º
+;ÇÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÁÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ¶
+;º INPUT : Nessuno                                                            º
+;ÇÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ¶
+;º OUTPUT : Nessuno                                                           º
+;ÇÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ¶
+;º FUNZIONI CHIAMATE : PRINTF                                                 º
+;ÇÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ¶
+;º DESCRIZIONE : Interrupt di ricezione porta B del SIO                       º
+;º Stampa il dato ricevuto in HEX                                             º
+;ÈÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍ¼
+EXTRN		PRINTF
+
+RXMON:
+		EI
+		SAVEREG
+		LD	BC,SIOB_DR
+		IN	E,(C)
+		LD	D,0000H
+		LD	HL,FORMAT__
+		CALL	PRINTF
+		RESTOREREG
+		RETI
+
+FORMAT__:
+		DEFB ' %x'
+		DEFB 00H
+		DEFB 00H
+
+;ÉÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÑÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍ»
+;º FUNZIONE : SPECINT                       ³DATE: Mon  09-13-1993  20:31:22  º
+;ÇÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÁÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ¶
+;º INPUT : Nessuno                                                            º
+;ÇÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ¶
+;º OUTPUT : Nessuno                                                           º
+;ÇÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ¶
+;º FUNZIONI CHIAMATE : PUTC                                                   º
+;ÇÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ¶
+;º DESCRIZIONE : Interrupt di condizione speciale                             º
+;º Viene attivata da un interrupt dalla porta B del sio di ricezione          º
+;º condizione speciale (es. parity error) invia un break in linea e stampa    º
+;º un *                                                                       º
+;ÈÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍ¼
+EXTRN		PUTC
+
+SPECINT:
+		EI
+		SAVEREG
+		LD	L,'*'
+		CALL 	PUTC
+		LD	BC,SIOB_CR
+		LD	A,SNDBRK
+		OUT	(C),A
+		LD	A,RESERR
+		OUT	(C),A
+		RESTOREREG
+		RETI
+;
+;ÉÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÑÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍ»
+;º FUNZIONE : IH_TXLDP  >>>> SVILUPPO <<<<  ³DATE: Mon  09-13-1993  20:31:22  º
+;ÇÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÁÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ¶
+;º INPUT : Nessuno                                                            º
+;ÇÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ¶
+;º OUTPUT : Nessuno                                                           º
+;ÇÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ¶
+;º FUNZIONI CHIAMATE : Nessuna                                                º
+;ÇÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ¶
+;º DESCRIZIONE : Interrupt di fine trasmissione da porta B SIO in caricamento º
+;ÈÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍ¼
+IH_TXLDP:
+		HALT
+
+;
+;ÉÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÑÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍ»
+;º FUNZIONE : IH_RXLDP  >>>> SVILUPPO <<<<  ³DATE: Mon  09-13-1993  20:31:22  º
+;ÇÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÁÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ¶
+;º INPUT : Nessuno                                                            º
+;ÇÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ¶
+;º OUTPUT : Nessuno                                                           º
+;ÇÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ¶
+;º FUNZIONI CHIAMATE : ENDPACK PUTC                                           º
+;ÇÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ¶
+;º DESCRIZIONE : Interrupt di ricezione porta B SIO                           º
+;º La routine viene linkata quando e' attivo il caricamento di un file in     º
+;º formato S-RECORD HITACHI, tale routine si appoggia ad un array di puntatoriº
+;º che puntano ad una struttura di tipo LDBUF.                                º
+;º Alla ricezione dell'interrupt viene mappato il decrittore corrente e viene º
+;º controllato che il descrittore risuliti libero, in tal caso viene letto il º
+;º carattere dal dispositivo di I/O, tolto il bit di parita'.                 º
+;º Se il carattere indica la fine del pacchetto viene chiameta una routine c  º
+;º che aggiorna il descrittore corrente ed si posiziona al prossimo           º
+;º descrittore libero in caso contrario viene scaricato nel buffer il         º
+;º carattere letto e vengono incrementati i campi relativi alla lunghezza del º
+;º pacchetto ed il puntatore al prossimo carattere nel buffer.                º
+;º La gestione di questo interrupt e' effettuata ad interrupt aperti per      º
+;º permettere all'interrupt di clock piu' prioritario di inserirsi potendo    º
+;º cosi' mantenere aggiornata la base tempi della cpu.                        º
+;º                                                                            º
+;ÈÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍ¼
+CR		EQU	0DH
+
+EXTRN		FREEBUF;		; puntatore buffer corrente vuoto
+EXTRN		ENDPACK;		; Routine C gestione fine pacchetto
+EXTRN		XOFF;			; Ferma il trasmettitore
+EXTRN		XON;			; Riattiva il trasmettitore
+IH_RXLDP:
+		EI
+		SAVEREG
+		PUSH	IX
+		LD 	IX,(FREEBUF)	; IX = PUNTATORE AD ARRAY PUNTATORI
+		LD	L,(IX+0)        ; HL = PUNTATORE A DESCRITTORE
+		LD	H,(IX+1)        ; SCAMBIO IX CON HL
+		PUSH	HL
+		POP	IX              ; IX = PUNTATORE A DESCRITTORE
+		LD	A,(IX+0)
+		OR	A
+		JR	NZ,RXERROR	; il descrittore corrente NON E' LIBERO
+		LD	BC,SIOB_DR
+		IN	A,(C)
+		AND	07FH
+		CP	CR
+		JR	Z,C_PACK        ; fine pacchetto
+		LD	L,(IX+2)        ; HL = PUNTATORE SCARICO (ptchar)
+		LD	H,(IX+3)
+		LD	(HL),A          ; Scarico carattere
+		INC	HL              ; incremento puntatore ptchar
+		LD	(IX+2),L        ; Aggiorno descrittore
+		LD	(IX+3),H
+		INC	(IX+6)          ; Incremento lunghezza pacchetto
+		POP	IX
+		RESTOREREG
+		RETI			; Fine interrupt
+C_PACK:
+		LD	L,(IX+2)    	; HL = PUNTATORE SCARICO (ptchar)
+		LD	H,(IX+3)
+		XOR	A
+		LD	(HL),A          ; Scrivo il carattere di fine stringa (NULL)
+		PUSH	IY
+		CALL	ENDPACK		; Chiamo routine aggiornamento descrittori e puntatori
+		POP	IY
+		POP	IX
+		RESTOREREG
+		RETI                	; Fine interrupt
+RXERROR:
+		PUSH	IY
+                LD      IX,LOADSTAT
+                LD      L,(IX+LDGENER)
+                LD      H,(IX+LDGENER+1)
+                INC     HL
+                LD      (IX+LDGENER),L
+                LD      (IX+LDGENER+1),H
+		LD	BC,SIOB_CR
+		LD	A,RESERR
+		OUT	(C),A
+		POP	IY
+		POP	IX
+		RESTOREREG
+		RETI
+
+;
+;ÉÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÑÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍ»
+;º FUNZIONE : IH_ERRLDP >>>> SVILUPPO <<<<  ³DATE: Mon  09-13-1993  20:31:22  º
+;ÇÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÁÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ¶
+;º INPUT : Nessuno                                                            º
+;ÇÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ¶
+;º OUTPUT : Nessuno                                                           º
+;ÇÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ¶
+;º FUNZIONI CHIAMATE : Nessuna                                                º
+;ÇÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ¶
+;º DESCRIZIONE : Interrupt di condizione speciale in fase di caricamento      º
+;º Viene attivata da un interrupt dalla porta B del sio di ricezione          º
+;º condizione speciale (es. parity error) invia un break in linea e stampa    º
+;º un *                                                                       º
+;ÈÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍ¼
+IH_ERRLDP:
+		EI
+		SAVEREG
+                PUSH    IX
+                LD      IX,LOADSTAT
+                LD      L,(IX+LDPARITYERR)
+                LD      H,(IX+LDPARITYERR+1)
+                INC     HL
+                LD      (IX+LDPARITYERR),L
+                LD      (IX+LDPARITYERR+1),H
+                LD      BC,SIOB_CR
+                LD      A,RESERR
+		OUT	(C),A
+                POP     IX
+                RESTOREREG
+		RETI
+
+		END
+

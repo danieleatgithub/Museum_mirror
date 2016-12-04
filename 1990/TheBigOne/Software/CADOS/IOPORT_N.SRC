@@ -1,0 +1,49 @@
+;
+;ษอออออออออออออออออออออออออออออออออออออออออออัออออออออออออัออออออออออออออออออออป
+;บ FILE:\CADASM\R10\ROM\CADOS\IOPORT_N.SRC   ณVERS:1.1    ณTIPO: INCLUDE ASM   บ
+;วฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤลฤฤฤฤฤฤฤฤฤฤฤฤมฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤถ
+;บ AUTORE: Colombo Daniele                   ณDATA: Mon  09-13-1993  21:57:00  บ
+;ฬอออออออออออออออออออออออออออออออออออออออออออฯอออออออออออออออออออออออออออออออออน
+;บ DESCRIZIONE: INDIRIZZI PORTE E VALORI PER I/O (VERSIONE HW 2)               บ
+;บ  WARNING (1):                                                               บ
+;บ  LE DEFINE DEVONO ESSERE SEMPRE ALLINEATE CON IL CONTENUTO DEL FILE         บ                                                                  บ
+;บ  IO_NEW.H                                                                   บ
+;บ  PER INDIRIZZARE L'I/O INTERNO DEVE ESSERE INDIRIZZATA LA PORTA CON         บ
+;บ  IL BPS DEL BUS ADDRESS A ZERO, MENTRE PER L'I/O ESTERNO DEVE               บ
+;บ  IL BPS DEL BUS ADDRESS DEVE ESSERE DIVERSO DA ZERO                         บ
+;ศอออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออผ
+;
+
+P8255           EQU     0FF03H  ; CONTROL PORT 8255
+D8255           EQU     0FF02H  ; DATA PORT 8255
+
+ICR             EQU     0003FH  ; I/O CONTROL REGISTER
+DCNTL 		EQU	00032H	; DMA WAIT CONTROL REGISTER
+IL		EQU	00033H	; INTERRUPT VECTOR LOW REGISTER
+LIVECT		EQU	000E0H	; LOW INTERRUPT VECTOR
+IORELOC_	EQU	000C0H	; RILOCA IO INTERNO NELLA PARTE ALTA
+
+PIOA_CR		EQU	0FF12H    ; Control register PIO port A
+PIOA_DR		EQU	0FF10H    ; Data register    PIO port A
+AR_6845 	EQU     0FF0CH    ; Control register CRT
+DR_6845 	EQU     0FF0DH    ; Data register    CRT
+SIOA_CR		EQU     0FF1AH    ; Control register SIO port A
+SIOA_DR		EQU     0FF18H	  ; Data register    SIO port A
+SIOB_CR		EQU     0FF1BH	  ; Control register SIO port B
+SIOB_DR		EQU     0FF19H	  ; Data register    SIO port B
+CTCCH_0		EQU	0FF08H	  ; Register         CTC channel 0
+CTCCH_1		EQU	0FF09H	  ; Register         CTC channel 1
+CTCCH_2		EQU	0FF0AH    ; Register         CTC channel 2
+CTCCH_3		EQU	0FF0BH	  ; Register         CTC channel 3
+
+
+RESERR		EQU	00110000B	; Sio error reset
+SNDBRK		EQU	00001000B	; Send break
+RESEXT		EQU	00010000B	; Reset external status interrupt
+RIPEND          EQU     00101000B       ; Reset tx interrupt pending
+
+MOD082          EQU     10010000B       ; Set in mode 0 8255
+DISNMI          EQU     0CH             ; Disable NMI
+DONMI           EQU     10000000B       ; Perform NMI
+
+

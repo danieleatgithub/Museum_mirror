@@ -1,0 +1,174 @@
+;
+;ษอออออออออออออออออออออออออออออออออออออออออออัออออออออออออัออออออออออออออออออออป
+;บ FILE:\CADASM\R10\ROM\DRIVER\LDDRV.SRC     ณVERS:1.1    ณTIPO: LIBRERIA ASM  บ
+;วฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤลฤฤฤฤฤฤฤฤฤฤฤฤมฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤถ
+;บ AUTORE: Colombo Daniele                   ณDATA: Sat  09-25-1993  09:20:08  บ
+;ฬอออออออออออออออออออออออออออออออออออออออออออฯอออออออออออออออออออออออออออออออออน
+;บ INCLUDE: \CADASM\R10\ROM\DRIVER\MACH.SRC                                    บ
+;ฬอออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออน
+;บ FUNZIONI PUBBLICHE: convhrec() - chtest()                                   บ
+;ฬอออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออน
+;บ DESCRIZIONE: Funzioni assembler di base per caricatore                      บ
+;ศอออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออผ
+
+        NAME LDDRV
+
+        FILE    \CADASM\R10\ROM\DRIVER\MACH.SRC
+        FILE    \CADASM\R10\ROM\DRIVER\LDSTRUCT.SRC
+
+PUBLIC CONVHREC,CONVHRECF,CKTEST
+
+
+;
+;ษออออออออออออออออออออออออออออออออออออออออออัอออออออออออออออออออออออออออออออออป
+;บ FUNZIONE : CONVHREC                      ณDATE: Sat  09-25-1993  09:36:31  บ
+;วฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤมฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤถ
+;บ INPUT :                                                                    บ
+;บ Reg. HL = Puntatore ad una struttura di tipo HIT_REC                       บ
+;วฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤถ
+;บ OUTPUT : Nessuno                                                           บ
+;วฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤถ
+;บ FUNZIONI CHIAMATE : cvhex()                                                บ
+;วฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤถ
+;บ DESCRIZIONE : Converte il numero di byte richiesto da ascii in esadecimale บ
+;บ e li scrive alla destinazione richiesta aggiorna la checksum e la          บ
+;บ lunghezza totale                                                           บ
+;ศออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออผ
+
+CONVHREC:
+        PUSHREG
+        PUSH    IX
+
+        PUSH    HL                   ; INDIRIZZO DELLA STRUTTURA HIT_REC
+        POP     IX
+        LD      E,(IX+LDDESTBMS)     ; DE = DESTINATION POINTER
+        LD      D,(IX+LDDESTBPS)
+        LD      C,(IX+LDLENBMS)      ; BC = LENGHT
+        LD      B,(IX+LDLENBPS)
+        LD      L,(IX+LDSRCBMS)      ; HL = ASCII SOURCE POINTER
+        LD      H,(IX+LDSRCBPS)
+
+CVH_1:
+        CALL    CVHEX              ; CONVERTO IL BYTE E LO
+        LD      (DE),A             ; SCRIVO A DESTINAZIONE
+        INC     HL                 ; INCREMENTO SOURCE POINTER AL PROSSIMO BYTE ASCII
+        INC     HL
+        ADD     A,(IX+LDCKSUM)       ; AGGIORNO CHECKSUM
+        LD      (IX+LDCKSUM),A
+        INC     DE                 ; INCREMENTO DESTINATION POINTER
+
+        PUSH    HL                   ; INCREMENTO ED AGGIORNO
+        LD      HL,(LOADSTAT+LDLDLEN)  ; LUNGHEZZA TOTALE
+        INC     HL
+        LD      (LOADSTAT+LDLDLEN),HL
+        POP     HL
+
+        DEC     BC                   ; DECREMENTO LUNGHEZZA
+        LD      A,C
+        OR      B                    ; SE LUNGHEZZA DIVERSA DA ZERO RIESEGUO
+        JR      NZ,CVH_1
+
+        LD      (IX+LDSRCBMS),L
+        LD      (IX+LDSRCBPS),H
+        LD      (IX+LDDESTBMS),E
+        LD      (IX+LDDESTBPS),D
+
+        POP     IX
+        POPREG
+        RET
+
+;
+;ษออออออออออออออออออออออออออออออออออออออออออัอออออออออออออออออออออออออออออออออป
+;บ FUNZIONE : CONVHRECF                     ณDATE: Mon  10-25-1993  23:12:02  บ
+;วฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤมฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤถ
+;บ INPUT :                                                                    บ
+;บ Reg. HL = Puntatore ad una struttura di tipo HIT_REC                       บ
+;วฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤถ
+;บ OUTPUT : Nessuno                                                           บ
+;วฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤถ
+;บ FUNZIONI CHIAMATE : cvhex()                                                บ
+;วฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤถ
+;บ DESCRIZIONE : Converte 2 byte invertendo il piu' significativo con il meno บ
+;บ significativo e li scrive invertiti alla destinazione richiesta ed aggiornaบ
+;บ checksum e lunghezza totale                                                บ
+;บ DA USARE PER CONVERTIRE PUNTATORI  (LA LUNGHEZZA E' CABLATA)               บ
+;ศออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออผ
+
+CONVHRECF:
+        PUSHREG
+        PUSH    IX
+
+        PUSH    HL                   ; INDIRIZZO DELLA STRUTTURA HIT_REC
+        POP     IX
+        LD      E,(IX+LDDESTBMS)     ; DE = DESTINATION POINTER
+        LD      D,(IX+LDDESTBPS)
+        INC     DE                   ; Punto al BMS
+        LD      L,(IX+LDSRCBMS)      ; HL = ASCII SOURCE POINTER
+        LD      H,(IX+LDSRCBPS)
+        LD      B,0002H              ; CABLO LUNGHEZZA A DUE BYTE
+
+CVHF_1:
+        CALL    CVHEX              ; CONVERTO IL BYTE E LO
+        LD      (DE),A             ; SCRIVO A DESTINAZIONE
+        INC     HL                 ; INCREMENTO SOURCE POINTER AL PROSSIMO BYTE ASCII
+        INC     HL
+        ADD     A,(IX+LDCKSUM)         ; AGGIORNO CHECKSUM
+        LD      (IX+LDCKSUM),A
+        DEC     DE                     ; PUNTO AL BPS
+        PUSH    HL                     ; INCREMENTO ED AGGIORNO
+        LD      HL,(LOADSTAT+LDLDLEN)  ; LUNGHEZZA TOTALE
+        INC     HL
+        LD      (LOADSTAT+LDLDLEN),HL
+        POP     HL
+
+        DEC     B                    ; DECREMENTO LUNGHEZZA
+        JR      NZ,CVHF_1            ; SE LUNGHEZZA DIVERSA DA ZERO RIESEGUO
+
+        INC     DE                   ; INCREMENTO DESTINAZIONE FINO
+        INC     DE                   ; A PUNTARE ALLA LOCAZIONE SUCCESSIVA A
+        INC     DE                   ; QUELLA USATA
+        LD      (IX+LDSRCBMS),L
+        LD      (IX+LDSRCBPS),H
+        LD      (IX+LDDESTBMS),E
+        LD      (IX+LDDESTBPS),D
+
+        POP     IX
+        POPREG
+        RET
+
+;
+;ษออออออออออออออออออออออออออออออออออออออออออัอออออออออออออออออออออออออออออออออป
+;บ FUNZIONE : CKTEST                        ณDATE: Sat  09-25-1993  10:26:03  บ
+;วฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤมฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤถ
+;บ INPUT : Reg. HL = Puntatore ad una struttura di tipo HIT_REC               บ
+;วฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤถ
+;บ OUTPUT : Ritorna in un char l'esito del controllo                          บ
+;บ 0 = ckecksum corretta                                                      บ
+;บ X = ckecksum errata                                                        บ
+;วฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤถ
+;บ FUNZIONI CHIAMATE :  cvhex()                                               บ
+;วฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤถ
+;บ DESCRIZIONE : Confronta la checksum calcolata nelle precedenti             บ
+;บ conversioni e scritta nel descrittore con quella scritta nella             บ
+;บ stringa ascii da convertire                                                บ
+;ศออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออผ
+
+CKTEST:
+
+        PUSH    HL                 ; SALVO HL
+        PUSH    IX                 ; SALVO IX
+
+        PUSH    HL                 ; METTO IN IX IL PUNTATORE A HIT_REC
+        POP     IX
+
+        LD      L,(IX+LDSRCBMS)    ; HL = ASCII SOURCE POINTER
+        LD      H,(IX+LDSRCBPS)
+        CALL    CVHEX              ; CONVERTO CHECKSUM RICEVUTA
+        ADD     A,(IX+LDCKSUM)
+        SUB     0FFH
+
+        POP     IX
+        POP     HL
+        RET
+
+

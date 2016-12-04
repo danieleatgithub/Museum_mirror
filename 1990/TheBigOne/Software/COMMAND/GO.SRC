@@ -1,0 +1,128 @@
+;
+;ษอออออออออออออออออออออออออออออออออออออออออออัออออออออออออัออออออออออออออออออออป
+;บ FILE:\CADASM\R10\ROM\COMMAND\GO.SRC       ณVERS:1.1    ณTIPO:MODULO ASM     บ
+;วฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤลฤฤฤฤฤฤฤฤฤฤฤฤมฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤถ
+;บ AUTORE: Colombo Daniele                   ณDATA: Tue  10-05-1993  21:25:23  บ
+;ฬอออออออออออออออออออออออออออออออออออออออออออฯอออออออออออออออออออออออออออออออออน
+;บ INCLUDE:  \CADASM\R10\ROM\DRIVER\MACH.SRC \CADASM\R10\ROM\CADOS\IOPORT.SRC  บ
+;บ  \CADASM\R10\ROM\DRIVER\SYS.SRC                                             บ
+;ฬอออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออน
+;บ FUNZIONI PUBBLICHE: GOON                                                    บ
+;ฬอออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออน
+;บ DESCRIZIONE: Routine di interfaccia con l'utente                            บ
+;ศอออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออผ
+;
+        NAME GO
+
+        FILE    \CADASM\R10\ROM\DRIVER\MACH.SRC
+        FILE    \CADASM\R10\ROM\CADOS\IOPORT.SRC
+        FILE    \CADASM\R10\ROM\DRIVER\SYS.SRC
+
+
+PUBLIC GOON
+
+       CSEG
+
+;
+;ษออออออออออออออออออออออออออออออออออออออออออัอออออออออออออออออออออออออออออออออป
+;บ FUNZIONE : GOON                          ณDATE: Tue  10-05-1993  21:29:23  บ
+;วฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤมฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤถ
+;บ INPUT : Nessuno                                                            บ
+;วฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤถ
+;บ OUTPUT : Nessuno                                                           บ
+;วฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤถ
+;บ FUNZIONI CHIAMATE : Nessuna                                                บ
+;วฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤถ
+;บ DESCRIZIONE :  Passa in stato USER, riattiva tutti i break e trace point   บ
+;บ Riposiziona lo stato della maschera degli interrupt ed il contenuto dei    บ
+;บ registri di utente e lancia il programma di utente usando il PC salvato.   บ
+;ศออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออผ
+GOON:
+        LD      HL,SYSDESC         ; Passo in stato User
+        LD      A,(HL)
+        OR      001H
+        LD      (HL),A
+
+        LD      A,(UFRAME+USERI2)   ; Controllo lo stato di IFF2 di utente
+        BIT     0,A                 ;
+        JR      Z,DISINT            ; Se gli interrupt di utente sono disabilitati
+
+
+                                    ; INTERRUPT ABILITATI
+        LD      SP,UFRAME+USERAF    ; Posiziono lo stack all' User frame in cui
+                                    ; sono salvati i registri di Utente
+        POP     AF                 ;
+        POP     BC                 ;
+        POP     DE                 ;
+        POP     HL                 ; Restore dei registri di utente
+        EX      AF,AF'             ;
+        POP     AF                 ;
+        EX      AF,AF'             ;
+        EXX                        ;
+        POP     BC                 ;
+        POP     DE                 ;
+        POP     HL                 ;
+        EXX                        ;
+        POP     IX                 ;
+        POP     IY                 ;
+        LD      SP,(UFRAME+USERSP)         ; Restore dello stack pointer di Utente
+        LD      (UFRAME+USERAF+1),A        ; Salva registro A di Utente
+        LD      A,(UFRAME+USERI1)          ; Restore Vettore di interrupt
+        LD      I,A                        ;
+        PUSH    HL                 ; Metto HL in cima allo stack
+        LD      HL,(UFRAME+USERPC) ; Carico in HL il PC di ritorno
+        EX      (SP),HL            ; Metto nello stack di utente (attivo)
+                                   ; il PC di utente ed in HL il registro HL
+                                   ; di utente
+                                   
+        LD      A,(STEPFLG)          ; Se in TEMP c'e' FF  non sono in modo
+        OUT     (LOW D8255),A        ; Step e non scatta NMI dopo 5 istruzioni
+                                     ; (5 cicli M1) Se invece contiene BF
+                                     ; sono in modo step e scatta NMI dopo
+                                     ; 5 istruzioni
+
+        LD      A,(UFRAME+USERAF+1) ; Restore A register
+        EI                          ; Abilito gli interrupt
+        NOP
+        RET
+
+DISINT:
+                                    ; INTERRUPT DISABILITATI
+        LD      SP,UFRAME+USERAF    ; Posiziono lo stack all' User frame in cui
+                                    ; sono salvati i registri di Utente
+        POP     AF                 ;
+        POP     BC                 ;
+        POP     DE                 ;
+        POP     HL                 ; Restore dei registri di utente
+        EX      AF,AF'             ;
+        POP     AF                 ;
+        EX      AF,AF'             ;
+        EXX                        ;
+        POP     BC                 ;
+        POP     DE                 ;
+        POP     HL                 ;
+        EXX                        ;
+        POP     IX                 ;
+        POP     IY                 ;
+        LD      SP,(UFRAME+USERSP)         ; Restore dello stack pointer di Utente
+        LD      (UFRAME+USERAF+1),A        ; Salva registro A di Utente
+        LD      A,(UFRAME+USERI1)          ; Restore Vettore di interrupt
+        LD      I,A                        ;
+        PUSH    HL                 ; Metto HL in cima allo stack
+        LD      HL,(UFRAME+USERPC) ; Carico in HL il PC di ritorno
+        EX      (SP),HL            ; Metto nello stack di utente (attivo)
+                                   ; il PC di utente ed in HL il registro HL
+                                   ; di utente
+                                   
+        LD      A,(STEPFLG)          ; Se in TEMP c'e' FF  non sono in modo
+        OUT     (LOW D8255),A        ; Step e non scatta NMI dopo 5 istruzioni
+                                     ; (5 cicli M1) Se invece contiene BF
+                                     ; sono in modo step e scatta NMI dopo
+                                     ; 5 istruzioni
+
+        LD      A,(UFRAME+USERAF+1) ; Restore A register
+        DI                          ; Disabilito gli interrupt
+        NOP
+        RET
+        END
+

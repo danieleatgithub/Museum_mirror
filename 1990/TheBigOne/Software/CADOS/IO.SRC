@@ -1,0 +1,252 @@
+;
+;ษอออออออออออออออออออออออออออออออออออออออออออัออออออออออออัออออออออออออออออออออป
+;บ FILE:\CADASM\R10\ROM\CADOS\IO.SRC         ณVERS:1.1    ณTIPO: INTERRUPT ASM บ
+;วฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤลฤฤฤฤฤฤฤฤฤฤฤฤมฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤถ
+;บ AUTORE: Colombo Daniele                   ณDATA: Mon  09-13-1993  20:15:45  บ
+;ฬอออออออออออออออออออออออออออออออออออออออออออฯอออออออออออออออออออออออออออออออออน
+;บ INCLUDE: \CADASM\R10\ROM\CADOS\IOPORT.SRC - \CADASM\R10\ROM\DRIVER\MACH.SRC บ
+;บ \CADASM\R10\ROM\DRIVER\MACH.SRC                                             บ
+;ฬอออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออน
+;บ FUNZIONI PUBBLICHE: EI DI INPIO_A PIO_A_T INITCRT                           บ
+;ฬอออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออน
+;บ DESCRIZIONE: ROUTINE ASSEMBLER PER LA GESTIONE DEGLI INTERRUPT              บ
+;บ Per indirizzare l'i/o interno deve essere indirizzata la porta con il bps   บ
+;บ dell'indirizzo a zero, mentre per l'i/o esterno il bps dell'indirizzo deve  บ
+;บ essere diverso da zero                                                      บ
+;บ                                                                             บ
+;บ ษอออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออป บ
+;บ บ DATO SUL BUS INDIRIZZI PER TUTTE LE ISTRUZIONI DI I/O DELLA CPU HD64180 บ บ
+;บ ฬอออออออออออออัอออออออออออออัอออออออออออออออออออออัอออออออออออออออออออออออน บ
+;บ บ  ISTRUZIONE ณ  OPERANDO   ณ  BPS ADDRESS BUS    ณ   BMS ADDRESS BUS     บ บ
+;บ วฤฤฤฤฤฤฤฤฤฤฤฤฤลฤฤฤฤฤฤฤฤฤฤฤฤฤลฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤลฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤถ บ
+;บ บ    OUT      ณ  (nn),A     ณ    Accumulatore     ณ          nn           บ บ
+;บ บ    OUT      ณ  (C),r      ณ    Registro B       ณ      Registro C       บ บ
+;บ บ    OUTI     ณ             ณ    Registro B       ณ      Registro C       บ บ
+;บ บ    OUTD     ณ             ณ    Registro B       ณ      Registro C       บ บ
+;บ บ    OTIR     ณ             ณ    Registro B       ณ      Registro C       บ บ
+;บ บ    OTDR     ณ             ณ    Registro B       ณ      Registro C       บ บ
+;บ บ    IN       ณ  (nn),A     ณ    Accumulatore     ณ          nn           บ บ
+;บ บ    IN       ณ  (C),r      ณ    Registro B       ณ      Registro C       บ บ
+;บ บ    INI      ณ             ณ    Registro B       ณ      Registro C       บ บ
+;บ บ    IND      ณ             ณ    Registro B       ณ      Registro C       บ บ
+;บ บ    INIR     ณ             ณ    Registro B       ณ      Registro C       บ บ
+;บ บ    INDR     ณ             ณ    Registro B       ณ      Registro C       บ บ
+;บ บ    OUT0     ณ  (nn),A     ณ        0            ณ          nn           บ บ
+;บ บ    OTIM     ณ             ณ        0            ณ      Registro C       บ บ
+;บ บ    OTDM     ณ             ณ        0            ณ      Registro C       บ บ
+;บ บ    OTIMR    ณ             ณ        0            ณ      Registro C       บ บ
+;บ บ    OTDMR    ณ             ณ        0            ณ      Registro C       บ บ
+;บ บ    IN0      ณ  (nn),A     ณ        0            ณ          nn           บ บ
+;บ บ             ณ             ณ                     ณ                       บ บ
+;บ ศอออออออออออออฯอออออออออออออฯอออออออออออออออออออออฯอออออออออออออออออออออออผ บ
+;ศอออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออผ
+
+    NAME IO
+        FILE    \CADASM\R10\ROM\DRIVER\MACH.SRC
+        FILE    \CADASM\R10\ROM\CADOS\IOPORT.SRC
+	FILE	\CADASM\R10\ROM\DRIVER\VIDEODEF.SRC
+        FILE    \CADASM\R10\ROM\DRIVER\SYS.SRC
+
+EXTRN   KEYCHAR
+PUBLIC  EI,DI,INPIO_A,PIO_A_T,INITCRT,XON,XOFF,SIORES
+
+	CSEG
+;
+;ษออออออออออออออออออออออออออออออออออออออออออัอออออออออออออออออออออออออออออออออป
+;บ FUNZIONE : EI                            ณDATE: Mon  09-13-1993  21:06:10  บ
+;วฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤมฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤถ
+;บ INPUT : Nessuno                                                            บ
+;วฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤถ
+;บ OUTPUT : Nessuno                                                           บ
+;วฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤถ
+;บ FUNZIONI CHIAMATE : Nessuna                                                บ
+;วฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤถ
+;บ DESCRIZIONE :  Abilita gli interrupt                                       บ
+;ศออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออผ
+EI:
+	EI
+	RET
+;
+;ษออออออออออออออออออออออออออออออออออออออออออัอออออออออออออออออออออออออออออออออป
+;บ FUNZIONE : DI                            ณDATE: Mon  09-13-1993  21:06:10  บ
+;วฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤมฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤถ
+;บ INPUT : Nessuno                                                            บ
+;วฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤถ
+;บ OUTPUT : Nessuno                                                           บ
+;วฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤถ
+;บ FUNZIONI CHIAMATE : Nessuna                                                บ
+;วฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤถ
+;บ DESCRIZIONE :  Disabilita gli interrupt                                    บ
+;ศออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออผ
+DI:
+	DI
+	RET
+;ษออออออออออออออออออออออออออออออออออออออออออัอออออออออออออออออออออออออออออออออป
+;บ FUNZIONE : INITCRT                       ณDATE: Mon  09-13-1993  21:06:10  บ
+;วฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤมฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤถ
+;บ INPUT : Puntatore alla tabella di inizializzazione                         บ
+;วฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤถ
+;บ OUTPUT : Nessuno                                                           บ
+;วฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤถ
+;บ FUNZIONI CHIAMATE : Nessuna                                                บ
+;วฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤถ
+;บ DESCRIZIONE :  Inizializza il CRT controller con i dati della tabella      บ
+;บ passata.                                                                   บ
+;ศออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออผ
+INITCRT:
+		PUSH    AF
+		PUSH	BC
+		PUSH 	DE
+		XOR	A
+		LD  	E,10H             ; Contatore dati tabella
+CONTINUE:       LD 	BC,AR_6845        ; Address port CRTC
+		OUT 	(C),A             ; Scrivo numero registro
+		LD 	BC,DR_6845        ; in programmazione
+		INC 	A                 ; Prossimo registro interno CRTC
+		LD	D,(HL)		  ; Carico valore registro
+		OUT	(C),D
+		INC	HL                ; Incremento puntatore tabella
+		DEC	E                 ; Decremento contatore
+		JR 	NZ,CONTINUE       ; Se diverso da zero continuo
+		POP	DE
+		POP	BC
+		POP	HL
+		RET
+
+;ษอออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออป
+;บ  TABELLA DI DEFAULT PER INIZIALIZZAZIONE CRT CONTROLLER MC6845  บ
+;บ  VALORI PER MONITOR APPLE   TABELLA: CRTDEF_T                   บ
+;ฬอออออออออออออออัออออออออออัออออออออออออออออออออออออออออออออออออออน
+;บ  Colonne: 40  ณRighe: 25 ณFrequenza Hor: 15625 Hz               บ
+;วฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤลฤฤฤฤฤฤฤฤฤฤมฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤถ
+;บ  Clock: 8 MHz ณ                                                 บ
+;ศอออออออออออออออฯอออออออออออออออออออออออออออออออออออออออออออออออออผ
+
+		CSEG
+		PUBLIC	CRTDEF_T
+CRTDEF_T:
+
+	DEFB	38H ; R0  Horizontal total
+	DEFB    28H ; R1  Horizontal displayed
+	DEFB    2EH ; R2  Horizontal sync position
+	DEFB    03H ; R3  Horizontal sync width
+	DEFB    22H ; R4  Vertical total      
+	DEFB    0AH ; R5  Vertical total adjust
+	DEFB    19H ; R6  Vertical displayed
+	DEFB    20H ; R7  Vertical sinc position
+	DEFB    00H ; R8  Interlace mode     
+	DEFB    08H ; R9  Maximum scan line address
+	DEFB    60H ; R10 Cursor start             
+	DEFB    07H ; R11 Cursor end               
+	DEFB    00H ; R12 Start address (H)        
+	DEFB    00H ; R13 Start address (L)        
+	DEFB    00H ; R14 Cursor address (H)       
+	DEFB    00H ; R15 Cursor address (L)       
+		
+;ษออออออออออออออออออออออออออออออออออออออออออัอออออออออออออออออออออออออออออออออป
+;บ FUNZIONE : INPIO_A                       ณDATE: Mon  09-13-1993  21:06:10  บ
+;วฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤมฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤถ
+;บ INPUT : Registro HL puntatore alla tabella di inizializzazione             บ
+;วฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤถ
+;บ OUTPUT : Nessuno                                                           บ
+;วฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤถ
+;บ FUNZIONI CHIAMATE : Nessuna                                                บ
+;วฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤถ
+;บ DESCRIZIONE :  Inizializza la  Porta A del PIO                             บ
+;ศออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออผ
+INPIO_A:
+	PUSH	AF
+	PUSH	BC
+	PUSH	DE
+	XOR	A
+	LD	(KEYCHAR),A
+	LD	BC,PIOA_CR
+	LD	E,03
+PIO_CONT:
+	LD	D,(HL)
+	OUT	(C),D
+	INC	HL
+	DEC	E
+	JR	NZ,PIO_CONT
+	POP	DE
+	POP	BC
+	POP	AF
+	RET
+
+;ษออออออออออออออออออออออออออออออออออออออออออัอออออออออออออออออออออออออออออออออป
+;บ FUNZIONE : XON                           ณDATE: Mon  11-01-1993  09:55:16  บ
+;วฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤมฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤถ
+;บ INPUT : Registro HL porta I/O                                              บ
+;วฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤถ
+;บ OUTPUT : Nessuno                                                           บ
+;วฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤถ
+;บ FUNZIONI CHIAMATE : Nessuna                                                บ
+;วฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤถ
+;บ DESCRIZIONE :  Invia un XON sulla linea seriale                            บ
+;ศออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออผ
+XON:
+	PUSH	BC
+	PUSH	AF
+	LD	B,H
+	LD	C,L
+	LD	A,ASCIIXON
+	OUT	(C),A
+	POP	AF
+	POP	BC
+	RET
+;ษออออออออออออออออออออออออออออออออออออออออออัอออออออออออออออออออออออออออออออออป
+;บ FUNZIONE : XOFF                          ณDATE: Mon  11-01-1993  09:55:16  บ
+;วฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤมฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤถ
+;บ INPUT : Registro HL porta I/O                                              บ
+;วฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤถ
+;บ OUTPUT : Nessuno                                                           บ
+;วฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤถ
+;บ FUNZIONI CHIAMATE : Nessuna                                                บ
+;วฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤถ
+;บ DESCRIZIONE :  Invia un XOFF sulla linea seriale                           บ
+;ศออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออผ
+XOFF:
+	PUSH	BC
+	PUSH	AF
+	LD	B,H
+	LD	C,L
+	LD	A,ASCIIXOFF
+	OUT	(C),A
+	POP	AF
+	POP	BC
+	RET
+
+;ษออออออออออออออออออออออออออออออออออออออออออัอออออออออออออออออออออออออออออออออป
+;บ FUNZIONE : SIORES                        ณDATE: Mon  11-01-1993  09:55:16  บ
+;วฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤมฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤถ
+;บ INPUT : Registro HL Control port SIO                                       บ
+;วฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤถ
+;บ OUTPUT : Nessuno                                                           บ
+;วฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤถ
+;บ FUNZIONI CHIAMATE : Nessuna                                                บ
+;วฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤถ
+;บ DESCRIZIONE : Esegue un Reset del canale seriale                           บ
+;ศออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออผ
+SIORES:
+	PUSH	BC
+	PUSH	AF
+	LD	B,H
+	LD	C,L
+        LD      A,RESCHN
+	OUT	(C),A
+	POP	AF
+	POP	BC
+	RET
+
+;ษอออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออป
+;บ  TABELLA DI DEFAULT PER INIZIALIZZAZIONE PIO PORTA A            บ
+;บ  VALORI PER INTERFACCIA TASTIERA TABELLA: PIO_A_T               บ
+;ศอออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออผ
+PIO_A_T:
+	DEFB	07FH	;CONTROL WORD
+        DEFB    018H    ;INTERRUPT VECTOR
+	DEFB	083H	;INTTERUPT CONTROL WORD
+
+
+        END
+

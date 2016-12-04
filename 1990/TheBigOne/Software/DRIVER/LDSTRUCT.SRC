@@ -1,0 +1,36 @@
+;
+;ษอออออออออออออออออออออออออออออออออออออออออออัออออออออออออัออออออออออออออออออออป
+;บ FILE:\CADASM\R10\ROM\DRIVER\LDSTRUCT.SRC  ณVERS:1.1    ณTIPO: INCLUDE  ASM  บ
+;วฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤลฤฤฤฤฤฤฤฤฤฤฤฤมฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤถ
+;บ AUTORE: Colombo Daniele                   ณDATA: Sun  10-24-1993  09:39:16  บ
+;ฬอออออออออออออออออออออออออออออออออออออออออออฯอออออออออออออออออออออออออออออออออน
+;บ INCLUDE: Nessuno                                                            บ
+;ฬอออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออน
+;บ DESCRIZIONE: Offset per l'accesso alle strutture per il caricamento         บ
+;ศอออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออผ
+
+; OFFSET DI UNA STRUTTURA DI TIPO HIT_REC
+
+LDSRCBMS          EQU     0000H     ; Puntatore alla stringa da convertire
+LDSRCBPS          EQU     LDSRCBMS+1  ;
+LDDESTBMS         EQU     LDSRCBPS+1  ; Puntatore all'indirizzo di destinazione
+LDDESTBPS         EQU     LDDESTBMS+1 ;
+LDLENBMS          EQU     LDDESTBPS+1 ; Numero di byte da convertire
+LDLENBPS          EQU     LDLENBMS+1  ;
+LDCKSUM           EQU     LDLENBPS+1  ; Record checksum
+
+
+; OFFSET DI UNA STRUTTURA DI TIPO LDSTAT
+
+LDSTPFLAG         EQU     0           ; trasmitter stopped
+LDBUSYCOUNT       EQU     LDSTPFLAG+1   ; contatore buffer pieni
+LDLDLEN           EQU     LDBUSYCOUNT+1 ; Total lenght loaded
+LDOFFSET          EQU     LDLDLEN+2     ; offset load
+LDNOME            EQU     LDOFFSET+2    ; File name in load
+LDTIPO            EQU     LDNOME+20     ; file type
+LDPARITYERR       EQU     LDTIPO+3      ; Errori di parita'
+LDGENER           EQU     LDPARITYERR+2 ; Errori generici
+
+EXTRN           LOADSTAT,CVHEX
+
+

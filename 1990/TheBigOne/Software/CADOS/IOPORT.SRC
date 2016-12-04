@@ -1,0 +1,80 @@
+;
+;ษอออออออออออออออออออออออออออออออออออออออออออัออออออออออออัออออออออออออออออออออป
+;บ FILE:\CADASM\R10\ROM\CADOS\IOPORT.SRC     ณVERS:1.1    ณTIPO: INCLUDE ASM   บ
+;วฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤลฤฤฤฤฤฤฤฤฤฤฤฤมฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤถ
+;บ AUTORE: Colombo Daniele                   ณDATA: Mon  09-13-1993  21:57:00  บ
+;ฬอออออออออออออออออออออออออออออออออออออออออออฯอออออออออออออออออออออออออออออออออน
+;บ DESCRIZIONE: INDIRIZZI PORTE E VALORI PER I/O (VERSIONE HW 1)               บ
+;บ  WARNING (1):                                                               บ
+;บ  LE DEFINE DEVONO ESSERE SEMPRE ALLINEATE CON IL CONTENUTO DEL FILE         บ                                                                  บ
+;บ  IO.H                                                                       บ
+;บ  PER INDIRIZZARE L'I/O INTERNO DEVE ESSERE INDIRIZZATA LA PORTA CON         บ
+;บ  IL BPS DEL BUS ADDRESS A ZERO, MENTRE PER L'I/O ESTERNO DEVE               บ
+;บ  IL BPS DEL BUS ADDRESS DEVE ESSERE DIVERSO DA ZERO                         บ
+;ศอออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออผ
+
+P8255           EQU     0FF03H  ; CONTROL PORT 8255
+D8255           EQU     0FF02H  ; DATA PORT 8255
+
+ICR             EQU     0003FH  ; I/O CONTROL REGISTER
+DCNTL 		EQU	00032H	; DMA WAIT CONTROL REGISTER
+IL		EQU	00033H	; INTERRUPT VECTOR LOW REGISTER
+ITC             EQU     00034H  ; INTERRUPT CONTROL REGISTER
+
+LIVECT          EQU     000E0H  ; LOW INTERRUPT VECTOR
+IORELOC_	EQU	000C0H	; RILOCA IO INTERNO NELLA PARTE ALTA
+ENIT0           EQU     00001H  ; ABILITA INT0
+
+
+PIOA_CR		EQU	0FF82H    ; Control register PIO port A
+PIOA_DR		EQU	0FF80H    ; Data register    PIO port A
+AR_6845 	EQU     0FF60H    ; Control register CRT
+DR_6845 	EQU     0FF61H    ; Data register    CRT
+SIOA_CR		EQU     0FFC2H	  ; Control register SIO port A
+SIOA_DR		EQU     0FFC0H	  ; Data register    SIO port A
+SIOB_CR		EQU     0FFC3H	  ; Control register SIO port B
+SIOB_DR		EQU     0FFC1H	  ; Data register    SIO port B
+CTCCH_0		EQU	0FF40H	  ; Register         CTC channel 0
+CTCCH_1		EQU	0FF41H	  ; Register         CTC channel 1
+CTCCH_2		EQU	0FF42H	  ; Register         CTC channel 2
+CTCCH_3		EQU	0FF43H	  ; Register         CTC channel 3
+
+EPBMSAD         EQU     0FF20H    ; Eprom board BMS address (W)
+EPBPSAD         EQU     0FF21H    ; Eprom board BPS address (W)
+EPDATA          EQU     0FF22H    ; Eprom board data        (R&W)
+EPCTRL          EQU     0FF23H    ; Eprom board control     (W)
+
+EPIDLE          EQU     00001101B ; Led OFF Vpp OFF (Tutto disattivo)        [0D]
+EPWACT          EQU     00011101B ; Led OFF Vpp ON  (Attivato Vpp)           [1D]
+EPWRDY          EQU     00011111B ; Vpp ON bus to EP (Pronto a scrivere)     [1F]
+EPPGM           EQU     00010011B ; PGM ON CS ON (scrittura attiva)          [13]
+EPWREAD         EQU     00011000B ; READ in programm mode (legge con Vpp on) [18]
+EPPASS          EQU     01001101B ; Green LED on (Passed)                    [4D]
+EPFAIL          EQU     00101101B ; Red LED on (FAIL)                        [2D]
+NTENT           EQU     020H      ; Numero di tentativi di scrittura
+
+WAIT            MACRO   #X
+                PUSH    BC
+                LD      B,0F0H
+                DJNZ    $
+                POP     BC
+                ENDM
+ASCIIXON        EQU     17        ; DC1
+ASCIIXOFF       EQU     19        ; DC3
+
+RESERR          EQU     00110000B       ; Sio error reset
+SNDBRK		EQU	00001000B	; Send break
+RESCHN          EQU     00011000B       ; Reset channel
+RESEXT          EQU     00010000B       ; Reset external status interrupt
+RIPEND		EQU	00101000B	; Reset tx interrupt pending
+
+MOD082          EQU     10010000B       ; Set in mode 0 8255
+
+; BIT 7 PORTA FF02
+; 0 = Esegue un NMI dopo 5 istruzioni
+; 1 = Break disabilitato (abilitato da consolle)
+
+DISNMI          EQU     01000000B       ; Disable NMI
+ENNMI           EQU     11000000B       ; Abilita NMI Anche da consolle
+DONMI           EQU     10000000B       ; Perform NMI
+

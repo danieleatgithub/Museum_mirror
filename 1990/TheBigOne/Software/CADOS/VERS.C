@@ -1,0 +1,1 @@
+static char version[40]="CAD V1.0 Mon Dec 27 09:08:55 1993\r\n";

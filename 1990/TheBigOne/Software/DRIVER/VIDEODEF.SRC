@@ -1,0 +1,55 @@
+;ษอออออออออออออออออออออออออออออออออออออออออออัออออออออออออัออออออออออออออออออออป
+;บ FILE:\cadasm\r10\rom\driver\videodef.src  ณVERS:1.1    ณTIPO: IMPORT ASM    บ
+;วฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤลฤฤฤฤฤฤฤฤฤฤฤฤมฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤถ
+;บ AUTORE: Colombo Daniele                   ณDATA: Sun  09-12-1993  11:03:20  บ
+;ฬอออออออออออออออออออออออออออออออออออออออออออฯอออออออออออออออออออออออออออออออออน
+;บ INCLUDE: Nessuno                                                            บ
+;ฬอออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออน
+;บ DESCRIZIONE: DEFINIZIONI E DESCRITTORE VIDEO                                บ
+;บ Contiene:                                                                   บ
+;บ - Offset campi descrittore video                                            บ
+;บ - Massimo numero di linee , colonne e tabulazione                           บ
+;บ - Indirizzi porte CRT controller                                            บ
+;บ - Codifiche caratteri speciali                                              บ
+;ศอออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออผ
+
+
+CUR_X		EQU	00H		;OFFSET X POSITION
+CUR_Y		EQU	CUR_X+1		;OFFSET Y POSITION
+CSTYLE		EQU	CUR_Y+1		;OFFSET CURSOR STYLE
+PROMPT		EQU	CSTYLE+1        ;PROMPT
+RAM_STRT	EQU	PROMPT+1	;START PAGE ADDRESS
+CUR_STRT	EQU	RAM_STRT+2	;CURSOR ADDRESS POSITION
+
+MAXLINE		EQU	25        	;LAST LINE MAX VALUE Y AXIS
+MAXCOLUMN	EQU	40        	;LAST LINE MAX VALUE X AXIS
+
+	EXTRN	VIDEO_DESC	;IMPORT VIDEO STRUCTURE
+				;
+				; UCHAR	CUR_X
+				; UCHAR	CUR_Y
+				; UCHAR CSTYLE
+				; UCHAR PROMPT
+				; UINT  RAM_STRT
+				; UINT  CUR_STRT
+
+CURSOR_START	EQU	10	; Crt cursor start register
+CURSOR_END      EQU     11      ; Crt cursor end register
+PAGE_ADDR_H     EQU     12      ; Crt ram starting address high register
+PAGE_ADDR_L     EQU     13      ; Crt ram starting address low register
+CURSOR_ADDR_H   EQU     14      ; Crt cursor address high register
+CURSOR_ADDR_L   EQU     15      ; Crt cursor address low register
+
+CR              EQU     00DH    ; Carriage return
+LF              EQU     00AH    ; Line feed
+TAB             EQU     009H    ; Tabulation
+BS              EQU     008H    ; Backspace
+BELL		EQU	007H	; Bell
+U_ARR		EQU     011H	; Up arrow
+L_ARR		EQU     00FH	; Left arrow
+R_ARR		EQU     00EH	; Right arrow
+D_ARR		EQU     010H	; Down arrow
+
+SPACE           EQU     020H    ; Space
+TABDIM		EQU	004H	; Numero di caratteri per la tabulazione
+

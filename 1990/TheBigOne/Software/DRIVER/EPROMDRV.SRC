@@ -1,0 +1,65 @@
+        NAME EPROMDRV
+
+        FILE    \CADASM\R10\ROM\CADOS\IOPORT.SRC
+        FILE    \CADASM\R10\ROM\DRIVER\MACH.SRC
+        FILE    \CADASM\R10\ROM\DRIVER\SYS.SRC
+
+        PUBLIC  WREPROM,RELEPROM,RESEPROM
+
+; HL = Eprom address
+; DE = Eprom data
+; BC = size
+       CSEG
+WREPROM:
+        LD      BC,EPBMSAD
+        LD      A,L
+        OUT     (C),A
+        LD      BC,EPBPSAD
+        LD      A,H
+        OUT     (C),A
+        LD      L,NTENT
+EPTEN:  LD      A,E
+        LD      BC,EPDATA
+        OUT     (C),A
+        LD      A,EPWRDY
+        LD      BC,EPCTRL
+        OUT     (C),A
+        LD      A,EPPGM
+        OUT     (C),A
+        WAIT    25
+        LD      A,EPWRDY
+        OUT     (C),A
+        LD      A,EPWREAD
+        OUT     (C),A
+        LD      BC,EPDATA
+        IN      A,(C)
+        CP      E
+        JR      Z,EPOKAY
+        DEC     L
+        JR      NZ,EPTEN
+        LD      HL,0FFFFH
+        RET
+EPOKAY: LD      HL,0000H
+        RET
+
+RELEPROM:
+         LD     BC,EPCTRL
+         LD     A,L
+         OUT    (C),A
+         RET
+
+RESEPROM:
+         LD     BC,EPCTRL
+         LD     A,EPIDLE
+         OUT    (C),A
+         XOR    A
+         LD     BC,EPBMSAD
+         OUT    (C),A
+         LD     BC,EPBPSAD
+         OUT    (C),A
+         LD     BC,EPDATA
+         OUT    (C),A
+         RET
+
+
+

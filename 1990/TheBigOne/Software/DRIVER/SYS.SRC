@@ -1,0 +1,30 @@
+    EXTRN ATEMP,HLTEMP,STEPFLG,STEPCOUNT
+    EXTRN BPNUM,TPNUM,BPOINT,TPOINT
+    EXTRN UFRAME,SYSDESC,SYSSTK,FIXVECT_T
+    EXTRN COM,USERRAM,USTACK
+    EXTRN NMIMON,NMISTEP,NMIBREAK,NMITRACE
+
+USERPC    EQU   0         ; Campo userpc di uframe
+USERSP    EQU   USERPC+2  ; Campo usersp di uframe
+USERAF    EQU   USERSP+2  ; Registro AF
+USERRG    EQU   20        ; Stack dei registri di utente
+USERIX    EQU   USERRG    ; Campo userix di uframe
+USERIY    EQU   USERIX+2  ; Campo useriy di uframe
+USERI1    EQU   USERIY+2  ; Campo userif1 di uframe registro I
+USERI2    EQU   USERI1+1  ; Campo userif2 di uframe IFF2
+
+SZTRPDESC EQU   13
+BRP0   EQU   0
+BRP1   EQU   BRP0+SZTRPDESC
+BRP2   EQU   BRP1+SZTRPDESC
+TRP0   EQU   0
+TRP1   EQU   TRP0+SZTRPDESC
+TRP2   EQU   TRP1+SZTRPDESC
+
+OPADD     EQU   0
+OPDATA    EQU   2
+NOME    EQU     0        ; Campo name del descrittore COM
+PAR0    EQU     NOME+12  ; Campo PARAM 0 del descrittore COM
+PAR1    EQU     PAR0+2   ; Campo PARAM 1 del descrittore COM
+
+

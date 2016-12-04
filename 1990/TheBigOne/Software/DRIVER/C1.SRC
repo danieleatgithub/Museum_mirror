@@ -1,0 +1,68 @@
+;ษอออออออออออออออออออออออออออออออออออออออออออัออออออออออออัออออออออออออออออออออป
+;บ FILE:\CADASM\R10\ROM\DRIVER\C1.SRC        ณVERS:1.1    ณTIPO: LIBRERIA      บ
+;วฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤลฤฤฤฤฤฤฤฤฤฤฤฤมฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤถ
+;บ AUTORE: Colombo Daniele                   ณDATA: Sun  09-12-1993  11:12:39  บ
+;ฬอออออออออออออออออออออออออออออออออออออออออออฯอออออออออออออออออออออออออออออออออน
+;บ INCLUDE: \CADASM\R10\ROM\DRIVER\MACH.SRC                                    บ
+;ฬอออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออน
+;บ FUNZIONI PUBBLICHE: cvhex()                                                 บ
+;ฬอออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออน
+;บ DESCRIZIONE: FUNZIONI DI LIBRERIA PRIVATA                                   บ
+;ศอออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออผ
+
+    NAME C1
+
+        FILE \CADASM\R10\ROM\DRIVER\MACH.SRC
+
+
+PUBLIC	CVHEX
+
+	CSEG
+
+;ษออออออออออออออออออออออออออออออออออออออออออัอออออออออออออออออออออออออออออออออป
+;บ FUNZIONE : CVHEX                         ณDATE: Sun  09-12-1993  11:16:31  บ
+;วฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤมฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤถ
+;บ INPUT : Puntatore a carattere da convertire                                บ
+;วฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤถ
+;บ OUTPUT : Valore esadecimale                                                บ
+;วฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤถ
+;บ FUNZIONI CHIAMATE : Nessuna                                                บ
+;วฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤถ
+;บ DESCRIZIONE : Converte il carattere passato nel valore esadecimale         บ
+;บ Non sono eseguiti controlli sul carattere da convertire                    บ
+;ศออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออผ
+
+CVHEX:
+
+	PUSH	HL
+	XOR	A
+	LD	A,(HL)
+	SBC	A,'0'
+	CP	'A'-'0'-1
+	JR	C,CVH_1
+	SBC	A,'A'-'0'-0AH
+CVH_1:
+	RLA
+	RLA
+	RLA
+	RLA
+
+	PUSH	AF
+	INC	HL
+	XOR	A
+	LD	A,(HL)
+	SBC	A,'0'
+	CP	'A'-'0'-1
+	JR	C,CVH_2
+	SBC	A,'A'-'0'-0AH
+CVH_2:
+	AND	0FH
+	LD	H,A
+	POP	AF
+	AND	0F0H
+	OR	H
+	POP	HL
+	RET
+
+        END
+

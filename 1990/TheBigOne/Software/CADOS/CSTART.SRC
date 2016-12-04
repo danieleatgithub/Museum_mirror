@@ -1,0 +1,325 @@
+;
+;ษอออออออออออออออออออออออออออออออออออออออออออัออออออออออออัออออออออออออออออออออป
+;บ FILE:\CADASM\R10\ROM\CADOS\CSTART.SRC     ณVERS:1.1    ณTIPO: MOUDLO ASM    บ
+;วฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤลฤฤฤฤฤฤฤฤฤฤฤฤมฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤถ
+;บ AUTORE: Colombo Daniele                   ณDATA: Mon  09-13-1993  21:21:57  บ
+;ฬอออออออออออออออออออออออออออออออออออออออออออฯอออออออออออออออออออออออออออออออออน
+;บ INCLUDE:                                                                    บ
+;ฬอออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออน
+;บ FUNZIONI PUBBLICHE: ADDRESS 0000 START  LINK FIX INTERRUPT                  บ
+;ฬอออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออน
+;บ DESCRIZIONE: Routine di startup e linking dinamico interrupt fissi          บ
+;ศอออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออผ
+
+;ษออออออออออออออออออออออออออออออออออออออออออัอออออออออออออออออออออออออออออออออป
+;บ FUNZIONE : Address 0000 Hex              ณDATE: Mon  09-13-1993  21:06:10  บ
+;วฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤมฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤถ
+;บ FUNZIONI CHIAMATE : Salta alla routne ENTZ2_                               บ
+;วฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤถ
+;บ DESCRIZIONE :  Indirizzo di partenza Processore                            บ
+;ศออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออผ
+; Start-up routine for HD64180; required to initialize swapper
+
+        FILE    \CADASM\R10\ROM\CADOS\IOPORT.SRC
+        FILE    \CADASM\R10\ROM\DRIVER\MACH.SRC
+        FILE    \CADASM\R10\ROM\DRIVER\SYS.SRC
+
+    NAME CSTART
+
+    EXTRN ENTZ2_,INTVECT_T,INISCR,INITIO
+
+
+    ASEG
+    ORG 0
+    JP ENTZ2_
+
+;ษออออออออออออออออออออออออออออออออออออออออออัอออออออออออออออออออออออออออออออออป
+;บ FUNZIONE : Address 0008 Hex              ณDATE: Mon  09-13-1993  21:06:10  บ
+;วฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤมฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤถ
+;บ FUNZIONI CHIAMATE : Salta 2๘ ENTRY FIXVECT_T                               บ
+;วฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤถ
+;บ DESCRIZIONE :  Salta alla routine correntemente linkata nella tabella      บ
+;บ FIXVECT_T per la gestione della RST08                                      บ
+;บ La routine di gestione della restart deve recuperare in ultimo il valore   บ
+;บ del registro HL dallo STACK e rientrare con l'istruzione RET               บ
+;ศออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออผ
+	ASEG
+	ORG	08H
+        EX      (SP),HL      ; Riposiziono il PC all' istruzione
+        DEC     HL           ; dove e' scattato il break point
+        EX      (SP),HL      ;
+        JP      CONT08
+
+;ษออออออออออออออออออออออออออออออออออออออออออัอออออออออออออออออออออออออออออออออป
+;บ FUNZIONE : Address 0010 Hex              ณDATE: Mon  09-13-1993  21:06:10  บ
+;วฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤมฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤถ
+;บ FUNZIONI CHIAMATE : Salta 3๘ ENTRY FIXVECT_T                               บ
+;วฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤถ
+;บ DESCRIZIONE :  Salta alla routine correntemente linkata nella tabella      บ
+;บ FIXVECT_T per la gestione della RST10                                      บ
+;บ La routine di gestione della restart deve recuperare in ultimo il valore   บ
+;บ del registro HL dallo STACK e rientrare con l'istruzione RET               บ
+;ศออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออผ
+	ASEG
+	ORG	10H
+        EX      (SP),HL      ; Riposiziono il PC all' istruzione
+        DEC     HL           ; dove e' scattato il break point
+        EX      (SP),HL      ;
+        JP      CONT10
+
+;ษออออออออออออออออออออออออออออออออออออออออออัอออออออออออออออออออออออออออออออออป
+;บ FUNZIONE : Address 0018 Hex              ณDATE: Mon  09-13-1993  21:06:10  บ
+;วฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤมฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤถ
+;บ FUNZIONI CHIAMATE : Salta 4๘ ENTRY FIXVECT_T                               บ
+;วฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤถ
+;บ DESCRIZIONE :  Salta alla routine correntemente linkata nella tabella      บ
+;บ FIXVECT_T per la gestione della RST08                                      บ
+;บ La routine di gestione della restart deve recuperare in ultimo il valore   บ
+;บ del registro HL dallo STACK e rientrare con l'istruzione RET               บ
+;ศออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออผ
+	ASEG
+	ORG	18H
+        EX      (SP),HL      ; Riposiziono il PC all' istruzione
+        DEC     HL           ; dove e' scattato il break point
+        EX      (SP),HL      ;
+        JP      CONT18
+;ษออออออออออออออออออออออออออออออออออออออออออัอออออออออออออออออออออออออออออออออป
+;บ FUNZIONE : Address 0020 Hex              ณDATE: Mon  09-13-1993  21:06:10  บ
+;วฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤมฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤถ
+;บ FUNZIONI CHIAMATE : Salta 5๘ ENTRY FIXVECT_T                               บ
+;วฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤถ
+;บ DESCRIZIONE :  Salta alla routine correntemente linkata nella tabella      บ
+;บ FIXVECT_T per la gestione della RST20                                      บ
+;บ La routine di gestione della restart deve recuperare in ultimo il valore   บ
+;บ del registro HL dallo STACK e rientrare con l'istruzione RET               บ
+;ศออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออผ
+	ASEG
+	ORG	20H
+        EX      (SP),HL      ; Riposiziono il PC all' istruzione
+        DEC     HL           ; dove e' scattato il break point
+        EX      (SP),HL      ;
+        JP      CONT20
+;ษออออออออออออออออออออออออออออออออออออออออออัอออออออออออออออออออออออออออออออออป
+;บ FUNZIONE : Address 0028 Hex              ณDATE: Mon  09-13-1993  21:06:10  บ
+;วฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤมฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤถ
+;บ FUNZIONI CHIAMATE : Salta 6๘ ENTRY FIXVECT_T                               บ
+;วฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤถ
+;บ DESCRIZIONE :  Salta alla routine correntemente linkata nella tabella      บ
+;บ FIXVECT_T per la gestione della RST28                                      บ
+;บ La routine di gestione della restart deve recuperare in ultimo il valore   บ
+;บ del registro HL dallo STACK e rientrare con l'istruzione RET               บ
+;ศออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออผ
+	ASEG
+	ORG	28H
+        EX      (SP),HL      ; Riposiziono il PC all' istruzione
+        DEC     HL           ; dove e' scattato il break point
+        EX      (SP),HL      ;
+        JP      CONT28
+
+
+;ษออออออออออออออออออออออออออออออออออออออออออัอออออออออออออออออออออออออออออออออป
+;บ FUNZIONE : Address 0030 Hex              ณDATE: Mon  09-13-1993  21:06:10  บ
+;วฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤมฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤถ
+;บ FUNZIONI CHIAMATE : Salta 7๘ ENTRY FIXVECT_T                               บ
+;วฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤถ
+;บ DESCRIZIONE :  Salta alla routine correntemente linkata nella tabella      บ
+;บ FIXVECT_T per la gestione della RST30                                      บ
+;บ La routine di gestione della restart deve recuperare in ultimo il valore   บ
+;บ del registro HL dallo STACK e rientrare con l'istruzione RET               บ
+;ศออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออผ
+	ASEG
+        ORG     30H
+        EX      (SP),HL      ; Riposiziono il PC all' istruzione
+        DEC     HL           ; dove e' scattato il break point
+        EX      (SP),HL      ;
+        JP      CONT30
+;
+;ษออออออออออออออออออออออออออออออออออออออออออัอออออออออออออออออออออออออออออออออป
+;บ FUNZIONE : Address 0038 Hex              ณDATE: Mon  09-13-1993  21:06:10  บ
+;วฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤมฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤถ
+;บ FUNZIONI CHIAMATE : Salta 8๘ ENTRY FIXVECT_T                               บ
+;วฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤถ
+;บ DESCRIZIONE :  Salta alla routine correntemente linkata nella tabella      บ
+;บ FIXVECT_T per la gestione della RST38                                      บ
+;บ La routine di gestione della restart deve recuperare in ultimo il valore   บ
+;บ del registro HL dallo STACK e rientrare con l'istruzione RET               บ
+;ศออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออผ
+	ASEG
+	ORG	38H
+	PUSH    HL
+	LD 	HL,FIXVECT_T+14
+	JP	(HL)
+
+CONT08:
+        LD      (HLTEMP),HL         ; Salvo HL  e A
+        LD      (ATEMP),A           ;
+        LD      HL,(BPOINT+BRP0+OPADD)   ; Restore dell' opcode  al posto
+        LD      A,(BPOINT+BRP0+OPDATA)   ; del breakpoint
+        LD      (HL),A               ;
+
+        LD      HL,BPNUM              ; Setto il numero di break point
+        LD      A,00H                 ; incontrato
+        LD      (HL),A                ;
+        JP      GOTONMI
+
+
+;ษออออออออออออออออออออออออออออออออออออออออออัอออออออออออออออออออออออออออออออออป
+;บ FUNZIONE : Address 0066 Hex              ณDATE: Mon  09-13-1993  21:06:10  บ
+;วฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤมฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤถ
+;บ FUNZIONI CHIAMATE : Salta 1๘ ENTRY FIXVECT_T                               บ
+;วฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤถ
+;บ DESCRIZIONE :  Salta alla routine correntemente linkata nella tabella      บ
+;บ FIXVECT_T per la gestione dell'NMI.                                        บ
+;บ La routine di gestione dell' NMI deve recuperare in ultimo il valore       บ
+;บ del registro HL dallo STACK e rientrare con l'istruzione RETN              บ
+;ศออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออผ
+
+
+	ASEG
+        ORG     066H
+
+        LD      (ATEMP),A               ; Salvo A e BC
+;       LD      A,MOD082                ; Porta A input, B e C output
+;       OUT     (LOW P8255),A           ; Disabilito NMI
+        LD      A,DISNMI                ;
+        OUT     (LOW D8255),A           ;
+        LD      (HLTEMP),HL             ; Salvo HL
+
+        POP     HL                      ; In HL PC di ritorno e lo salvo
+        LD      (UFRAME+USERPC),HL      ;
+        LD      HL,(HLTEMP)             ; Restore di HL e A
+        LD      A,(ATEMP)               ;
+
+        LD      (UFRAME+USERSP),SP      ; Salvo lo Stack Pointer
+        LD      SP,UFRAME+USERRG+4      ; Carico lo SP con User Frame
+        PUSH    IY                      ;
+        PUSH    IX                      ;
+        EXX                             ;
+        PUSH    HL                      ;
+        PUSH    DE                      ;
+        PUSH    BC                      ;  Salvo tutti i registri
+        EXX                             ;  nel Frame User
+        EX      AF,AF'                  ;
+        PUSH    AF                      ;
+        EX      AF,AF'                  ;
+        PUSH    HL                      ;
+        PUSH    DE                      ;
+        PUSH    BC                      ;
+        PUSH    AF                      ;
+        LD      A,I                     ; Salvo Registro I
+
+        LD      (UFRAME+USERI1),A       ;
+        LD      A,00H                   ;
+        JP      PO,SETIF                ; Salvo IFF2
+        LD      A,01H                   ;
+SETIF:  LD      (UFRAME+USERI2),A       ;
+
+        LD      SP,STACK                ; Azzero lo stack di sistema
+
+        XOR     A
+        OUT0    (DCNTL+IORELOC_),A      ; NO WAIT
+        LD      A,LIVECT                ; RILOCA VETTORI DI INTERRUPT INTERNI
+        OUT0    (IL+IORELOC_),A         ; NELLA PARTE ALTA DI IVECT_T
+        LD      A,ENIT0                 ; ABILITA INTERRUPT 0
+        OUT0    (ITC+IORELOC_),A        ;
+        IM 2
+        LD      A,HIGH INTVECT_T
+	LD	I,A
+        CALL    INITIO
+        LD      HL,(FIXVECT_T)          ; Metto l'indirizzo contenuto nella
+        PUSH    HL
+        RETN                            ; jump table e salto a quell 'indirizzo
+
+
+;
+;
+;
+;
+;
+;
+CONT10:
+        LD      (HLTEMP),HL         ; Salvo HL  e A
+        LD      (ATEMP),A           ;
+        LD      HL,(BPOINT+BRP1+OPADD)   ; Restore dell' opcode  al posto
+        LD      A,(BPOINT+BRP1+OPDATA)   ; del breakpoint
+        LD      (HL),A               ;
+
+        LD      HL,BPNUM              ; Setto il numero di break point
+        LD      A,01H                 ; incontrato
+        LD      (HL),A                ;
+        JP      GOTONMI
+
+CONT18:
+        LD      (HLTEMP),HL         ; Salvo HL  e A
+        LD      (ATEMP),A           ;
+        LD      HL,(BPOINT+BRP2+OPADD)   ; Restore dell' opcode  al posto
+        LD      A,(BPOINT+BRP2+OPDATA)   ; del breakpoint
+        LD      (HL),A               ;
+
+        LD      HL,BPNUM              ; Setto il numero di break point
+        LD      A,02H                 ; incontrato
+        LD      (HL),A                ;
+        JP      GOTONMI
+
+
+GOTONMI:
+        LD      HL,NMIBREAK            ; Link della routine di gestione
+        LD      (FIXVECT_T),HL         ; dell' NMI relativa alla intercettazione
+                                       ; di un break point
+
+        LD      A,DONMI             ;
+        OUT     (LOW D8255),A       ; Esegue un NMI tra 5 cicli
+        LD      A,(ATEMP)           ; Recupero A
+        LD      HL,(HLTEMP)         ; Recupero HL
+        NOP
+        RET
+
+CONT20:
+        LD      (HLTEMP),HL         ; Salvo HL  e A
+        LD      (ATEMP),A           ;
+        LD      HL,(TPOINT+TRP0+OPADD)   ; Restore dell' opcode  al posto
+        LD      A,(TPOINT+TRP0+OPDATA)   ; del tracepoint
+        LD      (HL),A               ;
+
+        LD      HL,TPNUM              ; Setto il numero di Trace point
+        LD      A,00H                ; incontrato
+        LD      (HL),A                ;
+        JP      NMITR
+CONT28:
+        LD      (HLTEMP),HL         ; Salvo HL  e A
+        LD      (ATEMP),A           ;
+        LD      HL,(TPOINT+TRP1+OPADD)   ; Restore dell' opcode  al posto
+        LD      A,(TPOINT+TRP1+OPDATA)   ; del tracepoint
+        LD      (HL),A               ;
+
+        LD      HL,TPNUM              ; Setto il numero di Trace point
+        LD      A,001H                ; incontrato
+        LD      (HL),A                ;
+        JP      NMITR
+CONT30:
+        LD      (HLTEMP),HL         ; Salvo HL  e A
+        LD      (ATEMP),A           ;
+        LD      HL,(TPOINT+TRP2+OPADD)   ; Restore dell' opcode  al posto
+        LD      A,(TPOINT+TRP2+OPDATA)   ; del tracepoint
+        LD      (HL),A               ;
+
+        LD      HL,TPNUM              ; Setto il numero di Trace point
+        LD      A,002H                ; incontrato
+        LD      (HL),A                ;
+        JP      NMITR
+
+
+
+NMITR:
+        LD      HL,NMITRACE            ; Link della routine di gestione
+        LD      (FIXVECT_T),HL         ; dell' NMI relativa alla intercettazione
+                                       ; di un break point
+
+        LD      A,DONMI             ;
+        OUT     (LOW D8255),A       ; Esegue un NMI tra 5 cicli
+        LD      A,(ATEMP)           ; Recupero A
+        LD      HL,(HLTEMP)         ; Recupero HL
+        NOP
+        RET
+        END
+
